@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {    
     /// <summary>
     /// Mapping between the output Tensor names and the method that will use the

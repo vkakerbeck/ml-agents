@@ -12,7 +12,7 @@ by calling `SetActive(boolean)`. For example to also show the monitor during
 training, you can call it in the `InitializeAcademy()` method of your `Academy`:
 
 ```csharp
-using MLAgents;
+using mlagentsdev;
 
 public class YourAcademy : Academy {
     public override void InitializeAcademy()

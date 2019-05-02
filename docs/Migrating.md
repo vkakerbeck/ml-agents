@@ -55,7 +55,7 @@ using the search bar of the `Hierarchy` window with the word `Agent`.
     appropriate Brain ScriptableObject in it.
   * The Academy has a `Broadcast Hub` field in the inspector, which is
     list of brains used in the scene.  To train or control your Brain
-    from the `mlagents-learn` Python script, you need to drag the relevant
+    from the `mlagentsdev-learn` Python script, you need to drag the relevant
     `LearningBrain` ScriptableObjects used in your scene into entries
     into this list.
 
@@ -65,8 +65,8 @@ using the search bar of the `Hierarchy` window with the word `Agent`.
 
 * The Unity project `unity-environment` has been renamed `UnitySDK`.
 * The `python` folder has been renamed to `ml-agents`. It now contains two
-  packages, `mlagents.env` and `mlagents.trainers`. `mlagents.env` can be used
-  to interact directly with a Unity environment, while `mlagents.trainers`
+  packages, `mlagentsdev.env` and `mlagentsdev.trainers`. `mlagentsdev.env` can be used
+  to interact directly with a Unity environment, while `mlagentsdev.trainers`
   contains the classes for training agents.
 * The supported Unity version has changed from `2017.1 or later` to `2017.4
   or later`. 2017.4 is an LTS (Long Term Support) version that helps us
@@ -86,9 +86,9 @@ using the search bar of the `Hierarchy` window with the word `Agent`.
 ### Python API
 
 * In order to run a training session, you can now use the command
-  `mlagents-learn` instead of `python3 learn.py` after installing the `mlagents`
+  `mlagentsdev-learn` instead of `python3 learn.py` after installing the `mlagentsdev`
   packages. This change is documented
-  [here](Training-ML-Agents.md#training-with-mlagents-learn). For example,
+  [here](Training-ML-Agents.md#training-with-mlagentsdev-learn). For example,
   if we previously ran
 
   ```sh
@@ -99,15 +99,15 @@ using the search bar of the `Hierarchy` window with the word `Agent`.
   in v0.5), we now run
 
   ```sh
-  mlagents-learn config/trainer_config.yaml --env=3DBall --train
+  mlagentsdev-learn config/trainer_config.yaml --env=3DBall --train
   ```
 
   from the root directory where we installed the ML-Agents Toolkit.
 
 * It is now required to specify the path to the yaml trainer configuration file
-  when running `mlagents-learn`. For an example trainer configuration file, see
+  when running `mlagentsdev-learn`. For an example trainer configuration file, see
   [trainer_config.yaml](../config/trainer_config.yaml). An example of passing
-  a trainer configuration to `mlagents-learn` is shown above.
+  a trainer configuration to `mlagentsdev-learn` is shown above.
 * The environment name is now passed through the `--env` option.
 * Curriculum learning has been changed. Refer to the
     [curriculum learning documentation](Training-Curriculum-Learning.md)
@@ -124,7 +124,7 @@ using the search bar of the `Hierarchy` window with the word `Agent`.
 
 ### Unity API
 
-* `using MLAgents;` needs to be added in all of the C# scripts that use
+* `using mlagentsdev;` needs to be added in all of the C# scripts that use
   ML-Agents.
 
 ### Python API
@@ -151,7 +151,7 @@ in order to ensure a smooth transition.
 * The training script `ppo.py` and `PPO.ipynb` Python notebook have been
   replaced with a single `learn.py` script as the launching point for training
   with ML-Agents. For more information on using `learn.py`, see
-  [here](Training-ML-Agents.md#training-with-mlagents-learn).
+  [here](Training-ML-Agents.md#training-with-mlagentsdev-learn).
 * Hyperparameters for training Brains are now stored in the
   `trainer_config.yaml` file. For more information on using this file, see
   [here](Training-ML-Agents.md#training-config-file).

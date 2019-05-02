@@ -1,17 +1,17 @@
 # Unity ML-Agents Python Interface and Trainers
 
-The `mlagents` Python package is part of the [ML-Agents
-Toolkit](https://github.com/Unity-Technologies/ml-agents). `mlagents` provides a
+The `mlagentsdev` Python package is part of the [ML-Agents
+Toolkit](https://github.com/Unity-Technologies/ml-agents). `mlagentsdev` provides a
 Python API that allows direct interaction with the Unity game engine as well as
 a collection of trainers and algorithms to train agents in Unity environments.
 
-The `mlagents` Python package contains two components: a low level API which
-allows you to interact directly with a Unity Environment (`mlagents.envs`) and
-an entry point to train (`mlagents-learn`) which allows you to train agents in
+The `mlagentsdev` Python package contains two components: a low level API which
+allows you to interact directly with a Unity Environment (`mlagentsdev.envs`) and
+an entry point to train (`mlagentsdev-learn`) which allows you to train agents in
 Unity Environments using our implementations of reinforcement learning or
 imitation learning.
 
-## mlagents.envs
+## mlagentsdev.envs
 
 The ML-Agents Toolkit provides a Python API for controlling the Agent simulation
 loop of an environment or game built with Unity. This API is used by the
@@ -29,7 +29,7 @@ The key objects in the Python API include:
 - **BrainParameters** — describes the data elements in a BrainInfo object. For
   example, provides the array length of an observation in BrainInfo.
 
-These classes are all defined in the `ml-agents/mlagents/envs` folder of
+These classes are all defined in the `ml-agents/mlagentsdev/envs` folder of
 the ML-Agents SDK.
 
 To communicate with an Agent in a Unity environment from a Python program, the
@@ -47,12 +47,12 @@ release._
 ### Loading a Unity Environment
 
 Python-side communication happens through `UnityEnvironment` which is located in
-`ml-agents/mlagents/envs`. To load a Unity environment from a built binary
+`ml-agents/mlagentsdev/envs`. To load a Unity environment from a built binary
 file, put the file in the same directory as `envs`. For example, if the filename
 of your Unity environment is 3DBall.app, in python, run:
 
 ```python
-from mlagents.envs import UnityEnvironment
+from mlagentsdev.envs import UnityEnvironment
 env = UnityEnvironment(file_name="3DBall", worker_id=0, seed=1)
 ```
 
@@ -146,7 +146,7 @@ variable named `env` in this example, can be used in the following way:
   Sends a shutdown signal to the environment and closes the communication
   socket.
 
-## mlagents-learn
+## mlagentsdev-learn
 
-For more detailed documentation on using `mlagents-learn`, check out
+For more detailed documentation on using `mlagentsdev-learn`, check out
 [Training ML-Agents](Training-ML-Agents.md)

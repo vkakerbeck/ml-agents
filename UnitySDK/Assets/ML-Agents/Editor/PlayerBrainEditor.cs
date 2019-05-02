@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// CustomEditor for the PlayerBrain class. Defines the default Inspector view for a

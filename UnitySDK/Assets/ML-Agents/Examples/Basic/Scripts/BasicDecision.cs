@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using MLAgents;
+using mlagentsdev;
 
 public class BasicDecision : Decision
 {

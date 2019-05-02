@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class EditModeTestActionMasker
     {

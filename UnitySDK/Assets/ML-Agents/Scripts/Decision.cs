@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Interface for implementing the behavior of an Agent that uses a Heuristic

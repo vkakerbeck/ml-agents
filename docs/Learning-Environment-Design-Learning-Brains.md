@@ -55,7 +55,7 @@ To use a graph model:
 3. Once the `model_name.nn` file is imported, drag it from the **Project**
    window to the **Model** field of the Brain component.
 
-If you are using a model produced by the ML-Agents `mlagents-learn` command, use
+If you are using a model produced by the ML-Agents `mlagentsdev-learn` command, use
 the default values for the other Learning Brain parameters.
 
 ### Learning Brain properties

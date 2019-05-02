@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     public class NNModel : ScriptableObject
     {

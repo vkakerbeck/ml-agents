@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// This class contains logic for locomotion agents with joints which might make contact with the ground.

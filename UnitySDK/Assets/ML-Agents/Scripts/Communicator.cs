@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     public struct CommunicatorParameters
     {

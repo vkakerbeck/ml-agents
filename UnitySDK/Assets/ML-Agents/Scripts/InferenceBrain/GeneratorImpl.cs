@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
-using MLAgents.InferenceBrain.Utils;
+using mlagentsdev.InferenceBrain.Utils;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// Reshapes a Tensor so that its first dimension becomes equal to the current batch size

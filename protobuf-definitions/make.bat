@@ -6,12 +6,12 @@
 # COMPILER=Grpc.Tools.1.14.1/tools/macosx_x64
 # COMPILER=[DIRECTORY]
 
-SRC_DIR=proto/mlagents/envs/communicator_objects
+SRC_DIR=proto/mlagentsdev/envs/communicator_objects
 DST_DIR_C=../UnitySDK/Assets/ML-Agents/Scripts/CommunicatorObjects
 DST_DIR_P=../ml-agents-envs
 PROTO_PATH=proto
 
-PYTHON_PACKAGE=mlagents/envs/communicator_objects
+PYTHON_PACKAGE=mlagentsdev/envs/communicator_objects
 
 # clean
 rm -rf $DST_DIR_C

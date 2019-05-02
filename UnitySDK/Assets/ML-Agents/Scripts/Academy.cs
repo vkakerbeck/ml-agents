@@ -20,7 +20,7 @@ using UnityEditor;
  * https://github.com/Unity-Technologies/ml-agents/blob/master/docs/
  */
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Wraps the environment-level parameters that are provided within the
@@ -192,7 +192,7 @@ namespace MLAgents
         bool modeSwitched;
 
         /// Pointer to the batcher currently in use by the Academy.
-        MLAgents.Batcher brainBatcher;
+        mlagentsdev.Batcher brainBatcher;
 
         /// Used to write error messages.
         StreamWriter logWriter;

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEditor.SceneManagement;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// PropertyDrawer for BroadcastHub. Used to display the BroadcastHub in the Inspector.

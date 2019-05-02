@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
-using MLAgents.InferenceBrain;
+using mlagentsdev.InferenceBrain;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class EditModeTestInternalBrainTensorGenerator 
     {

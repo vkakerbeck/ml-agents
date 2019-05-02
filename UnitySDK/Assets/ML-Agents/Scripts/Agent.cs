@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 using UnityEngine;
 
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Struct that contains all the information for an Agent, including its 

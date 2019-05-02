@@ -2,7 +2,7 @@ using UnityEngine;
 using NUnit.Framework;
 
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class RayPerceptionTests : MonoBehaviour
     {

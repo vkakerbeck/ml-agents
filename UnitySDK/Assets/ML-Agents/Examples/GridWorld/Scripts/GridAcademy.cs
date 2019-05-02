@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using MLAgents;
+using mlagentsdev;
 
 
 public class GridAcademy : Academy

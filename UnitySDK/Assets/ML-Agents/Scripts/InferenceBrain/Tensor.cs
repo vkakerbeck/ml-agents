@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
 
 	/// <summary>

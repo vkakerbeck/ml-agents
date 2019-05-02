@@ -1,10 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
 using UnityEngine;
-using MLAgents.InferenceBrain;
-using MLAgents.InferenceBrain.Utils;
+using mlagentsdev.InferenceBrain;
+using mlagentsdev.InferenceBrain.Utils;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class MultinomialTest
     {

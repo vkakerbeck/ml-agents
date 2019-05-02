@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Implemetation of the Player Brain. Inherits from the base class Brain. Allows the user to

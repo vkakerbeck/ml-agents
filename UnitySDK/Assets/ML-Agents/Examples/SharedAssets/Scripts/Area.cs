@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
 
     public class Area : MonoBehaviour

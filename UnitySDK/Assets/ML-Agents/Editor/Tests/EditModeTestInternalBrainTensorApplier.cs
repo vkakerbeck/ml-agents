@@ -3,9 +3,9 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using System.Reflection;
-using MLAgents.InferenceBrain;
+using mlagentsdev.InferenceBrain;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class EditModeTestInternalBrainTensorApplier
     {

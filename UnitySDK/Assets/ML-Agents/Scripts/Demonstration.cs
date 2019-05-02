@@ -1,8 +1,8 @@
 ﻿using System;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Demonstration Object. Contains meta-data regarding demonstration.

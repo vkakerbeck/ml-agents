@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using MLAgents;
+using mlagentsdev;
 
-namespace MLAgents
+namespace mlagentsdev
 {
 
     public class RandomDecision : Decision

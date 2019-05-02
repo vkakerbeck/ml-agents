@@ -135,4 +135,4 @@ RUN pip install -e .
 # port 5005 is the port used in in Editor training.
 EXPOSE 5005
 
-ENTRYPOINT ["mlagents-learn"]
+ENTRYPOINT ["mlagentsdev-learn"]

@@ -2,7 +2,7 @@
 
 本教程将介绍创建 Unity 环境的过程。Unity 环境是用 Unity 引擎构建的应用程序，可用于训练 Reinforcement Learning（强化学习）agent。
 
-![简单的 ML-Agents 环境](images/mlagents-NewTutSplash.png)
+![简单的 ML-Agents 环境](images/mlagentsdev-NewTutSplash.png)
 
 在此示例中，我们将训练一个球滚动到一个随机放置的立方体。这个球还要学习避免从平台上掉落。
 
@@ -33,7 +33,7 @@
 
 您的 Unity **Project** 窗口应包含以下Assets：
 
-![Project 窗口](images/mlagents-NewProject.png)
+![Project 窗口](images/mlagentsdev-NewProject.png)
 
 ## 创建环境：
 
@@ -49,7 +49,7 @@
 
 （要设置新材质，请单击当前材质名称旁边的小圆圈图标。此时将打开 **Object Picker** 对话框，然后便可从项目中当前所有材质的列表中选择不同的材质。）
 
-![Inspector 窗口中的 Floor（地板）](images/mlagents-NewTutFloor.png)
+![Inspector 窗口中的 Floor（地板）](images/mlagentsdev-NewTutFloor.png)
 
 **添加目标立方体**
 
@@ -59,7 +59,7 @@
 4. 将 Transform 设置为 Position = (3,0.5,3)、Rotation = (0,0,0)、Scale = (1,1,1)。
 5. 在 Cube 的 Mesh Renderer 上，展开 Materials 属性并将默认材质更改为 *block*。
 
-![Inspector 窗口中的目标立方体](images/mlagents-NewTutBlock.png)
+![Inspector 窗口中的目标立方体](images/mlagentsdev-NewTutBlock.png)
 
 **添加 Agent 球体**
 
@@ -71,7 +71,7 @@
 6. 单击 **Add Component**。
 7. 向 Sphere 添加 Physics/Rigidbody 组件。（添加 Rigidbody）
 
-![Inspector 窗口中的 Agent 游戏对象](images/mlagents-NewTutSphere.png)
+![Inspector 窗口中的 Agent 游戏对象](images/mlagentsdev-NewTutSphere.png)
 
 请注意，我们将在本教程的稍后部分创建一个 Agent 子类以作为组件添加到此游戏对象。
 
@@ -82,7 +82,7 @@
 3. 右键单击 Academy 游戏对象，然后选择 Create Empty。
 4. 将 Academy 的此子级命名为“Brain”。
 
-![场景层级视图](images/mlagents-NewTutHierarchy.png)
+![场景层级视图](images/mlagentsdev-NewTutHierarchy.png)
 
 您可以调整摄像机角度以便在运行时更好地查看场景。接下来的步骤是创建并添加 ML-Agent 组件。
 
@@ -112,7 +112,7 @@ public class RollerAcademy : Academy { }
 
 Academy 属性的默认设置也适合该环境，因此我们无需在 Inspector 窗口中更改 RollerAcademy 组件的任何设置。
 
-![Academy 属性](images/mlagents-NewTutAcademy.png)
+![Academy 属性](images/mlagentsdev-NewTutAcademy.png)
 
 ## 添加 Brain
 
@@ -126,7 +126,7 @@ Brain 对象内部封装了决策过程。Agent 将观测结果发送给自己�
 
 我们稍后再讲解 Brain 属性，但现在将 Brain Type 保留为 **Player**。
 
-![Brain 默认属性](images/mlagents-NewTutBrain.png)
+![Brain 默认属性](images/mlagentsdev-NewTutBrain.png)
 
 ## 实现 Agent
 
@@ -372,7 +372,7 @@ public override void AgentAction(float[] vectorAction, string textAction)
 2. 选中 RollerAgent 游戏对象以便，在 Inspector 窗口中显示该对象的属性。
 3. 将 Brain 对象从 Hierarchy 窗口拖到 RollerAgent 的 Brain 字段。
 
-![将 Brain 分配给 RollerAgent](images/mlagents-NewTutAssignBrain.png)
+![将 Brain 分配给 RollerAgent](images/mlagentsdev-NewTutAssignBrain.png)
 
 另外，将 Target 游戏对象从 Hierarchy 窗口拖到 RollerAgent 的 Target 字段。
 

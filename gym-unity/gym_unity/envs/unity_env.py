@@ -2,7 +2,7 @@ import logging
 import itertools
 import gym
 import numpy as np
-from mlagents.envs import UnityEnvironment
+from mlagentsdev.envs import UnityEnvironment
 from gym import error, spaces
 
 

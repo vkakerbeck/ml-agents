@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Text.RegularExpressions;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Demonstration Recorder Component.

@@ -96,27 +96,27 @@ a Brain into the Broadcast Hub means that the Brain will be exposed to the Pytho
 The `Control` checkbox means that in addition to being exposed to Python, the Brain will
 be controlled by the Python process (required for training).
 
-   ![Set Brain to External](images/mlagents-SetBrainToTrain.png)
+   ![Set Brain to External](images/mlagentsdev-SetBrainToTrain.png)
 
 ### Training the environment
 
 1. Open a command or terminal window.
 2. Navigate to the folder where you cloned the ML-Agents toolkit repository.
    **Note**: If you followed the default [installation](Installation.md), then
-   you should be able to run `mlagents-learn` from any directory.
-3. Run `mlagents-learn <trainer-config-path> --run-id=<run-identifier> --train`
+   you should be able to run `mlagentsdev-learn` from any directory.
+3. Run `mlagentsdev-learn <trainer-config-path> --run-id=<run-identifier> --train`
    where:
     - `<trainer-config-path>` is the relative or absolute filepath of the
       trainer configuration. The defaults used by example environments included
-      in `MLAgentsSDK` can be found in `config/trainer_config.yaml`.
+      in `mlagentsdevSDK` can be found in `config/trainer_config.yaml`.
     - `<run-identifier>` is a string used to separate the results of different
       training runs
-    - `--train` tells `mlagents-learn` to run a training session (rather
+    - `--train` tells `mlagentsdev-learn` to run a training session (rather
       than inference)
 4. If you cloned the ML-Agents repo, then you can simply run
 
       ```sh
-      mlagents-learn config/trainer_config.yaml --run-id=firstRun --train
+      mlagentsdev-learn config/trainer_config.yaml --run-id=firstRun --train
       ```
 
 5. When the message _"Start training by pressing the Play button in the Unity
@@ -129,7 +129,7 @@ page](Learning-Environment-Executable.md) for instructions on how to build and
 use an executable.
 
 ```console
-ml-agents$ mlagents-learn config/trainer_config.yaml --run-id=first-run --train
+ml-agents$ mlagentsdev-learn config/trainer_config.yaml --run-id=first-run --train
 
 
                         ▄▄▄▓▓▓▓
@@ -146,7 +146,7 @@ ml-agents$ mlagents-learn config/trainer_config.yaml --run-id=first-run --train
                         ¬`▀▀▀█▓
 
 
-INFO:mlagents.learn:{'--curriculum': 'None',
+INFO:mlagentsdev.learn:{'--curriculum': 'None',
  '--docker-target-name': 'Empty',
  '--env': 'None',
  '--help': False,
@@ -162,17 +162,17 @@ INFO:mlagents.learn:{'--curriculum': 'None',
  '--train': True,
  '--worker-id': '0',
  '<trainer-config-path>': 'config/trainer_config.yaml'}
-INFO:mlagents.envs:Start training by pressing the Play button in the Unity Editor.
+INFO:mlagentsdev.envs:Start training by pressing the Play button in the Unity Editor.
  ```
 
 **Note**: If you're using Anaconda, don't forget to activate the ml-agents
 environment first.
 
-If `mlagents-learn` runs correctly and starts training, you should see something
+If `mlagentsdev-learn` runs correctly and starts training, you should see something
 like this:
 
 ```console
-INFO:mlagents.envs:
+INFO:mlagentsdev.envs:
 'Ball3DAcademy' started successfully!
 Unity Academy name: Ball3DAcademy
         Number of Brains: 1
@@ -186,7 +186,7 @@ Unity brain name: 3DBallLearning
         Vector Action space type: continuous
         Vector Action space size (per agent): [2]
         Vector Action descriptions: ,
-INFO:mlagents.envs:Hyperparameters for the PPO Trainer of brain 3DBallLearning:
+INFO:mlagentsdev.envs:Hyperparameters for the PPO Trainer of brain 3DBallLearning:
         batch_size:          64
         beta:                0.001
         buffer_size:         12000
@@ -209,16 +209,16 @@ INFO:mlagents.envs:Hyperparameters for the PPO Trainer of brain 3DBallLearning:
         curiosity_strength:  0.01
         curiosity_enc_size:  128
         model_path:	./models/first-run-0/3DBallLearning
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 1000. Mean Reward: 1.242. Std of Reward: 0.746. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 2000. Mean Reward: 1.319. Std of Reward: 0.693. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 3000. Mean Reward: 1.804. Std of Reward: 1.056. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 4000. Mean Reward: 2.151. Std of Reward: 1.432. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 5000. Mean Reward: 3.175. Std of Reward: 2.250. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 6000. Mean Reward: 4.898. Std of Reward: 4.019. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 7000. Mean Reward: 6.716. Std of Reward: 5.125. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 8000. Mean Reward: 12.124. Std of Reward: 11.929. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 9000. Mean Reward: 18.151. Std of Reward: 16.871. Training.
-INFO:mlagents.trainers: first-run-0: 3DBallLearning: Step: 10000. Mean Reward: 27.284. Std of Reward: 28.667. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 1000. Mean Reward: 1.242. Std of Reward: 0.746. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 2000. Mean Reward: 1.319. Std of Reward: 0.693. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 3000. Mean Reward: 1.804. Std of Reward: 1.056. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 4000. Mean Reward: 2.151. Std of Reward: 1.432. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 5000. Mean Reward: 3.175. Std of Reward: 2.250. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 6000. Mean Reward: 4.898. Std of Reward: 4.019. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 7000. Mean Reward: 6.716. Std of Reward: 5.125. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 8000. Mean Reward: 12.124. Std of Reward: 11.929. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 9000. Mean Reward: 18.151. Std of Reward: 16.871. Training.
+INFO:mlagentsdev.trainers: first-run-0: 3DBallLearning: Step: 10000. Mean Reward: 27.284. Std of Reward: 28.667. Training.
 ```
 
 ### After training

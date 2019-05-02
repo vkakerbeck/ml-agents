@@ -102,7 +102,7 @@ without pre-recording a demonstration file. The steps to do this are as follows:
    Additionally, set `batches_per_epoch`, which controls how much training to do
    each moment. Increase the `max_steps` option if you'd like to keep training
    the Agents for a longer period of time.
-8. Launch the training process with `mlagents-learn config/online_bc_config.yaml
+8. Launch the training process with `mlagentsdev-learn config/online_bc_config.yaml
    --train --slow`, and press the :arrow_forward: button in Unity when the
    message _"Start training by pressing the Play button in the Unity Editor"_ is
    displayed on the screen

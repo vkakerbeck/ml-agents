@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// BroadcastHub holds reference to brains and keeps track wether or not the brain be

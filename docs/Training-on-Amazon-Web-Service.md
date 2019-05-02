@@ -220,7 +220,7 @@ Headless Mode, you have to setup the X Server to enable training.)
 9. Test the instance setup from Python using:
 
     ```python
-    from mlagents.envs import UnityEnvironment
+    from mlagentsdev.envs import UnityEnvironment
 
     env = UnityEnvironment(<your_env>)
     ```
@@ -231,7 +231,7 @@ Headless Mode, you have to setup the X Server to enable training.)
 10. Train your models
 
     ```console
-    mlagents-learn <trainer-config-file> --env=<your_env> --train
+    mlagentsdev-learn <trainer-config-file> --env=<your_env> --train
     ```
     
 ## FAQ
@@ -258,12 +258,12 @@ If you didn't setup X Server or hasn't launched it properly, or you didn't made 
 Logging to /home/ubuntu/.config/unity3d/<Some_Path>/Player.log
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/home/ubuntu/ml-agents/ml-agents/mlagents/envs/environment.py", line 63, in __init__
+  File "/home/ubuntu/ml-agents/ml-agents/mlagentsdev/envs/environment.py", line 63, in __init__
     aca_params = self.send_academy_parameters(rl_init_parameters_in)
-  File "/home/ubuntu/ml-agents/ml-agents/mlagents/envs/environment.py", line 489, in send_academy_parameters
+  File "/home/ubuntu/ml-agents/ml-agents/mlagentsdev/envs/environment.py", line 489, in send_academy_parameters
     return self.communicator.initialize(inputs).rl_initialization_output
-  File "/home/ubuntu/ml-agents/ml-agents/mlagents/envs/rpc_communicator.py", line 60, in initialize
-mlagents.envs.exception.UnityTimeOutException: The Unity environment took too long to respond. Make sure that :
+  File "/home/ubuntu/ml-agents/ml-agents/mlagentsdev/envs/rpc_communicator.py", line 60, in initialize
+mlagentsdev.envs.exception.UnityTimeOutException: The Unity environment took too long to respond. Make sure that :
          The environment does not need user interaction to launch
          The Academy and the External Brain(s) are attached to objects in the Scene
          The environment and the Python interface have compatible versions.

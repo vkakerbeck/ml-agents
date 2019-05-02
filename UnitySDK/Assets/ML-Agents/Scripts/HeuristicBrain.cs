@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// The Heuristic Brain type allows you to hand code an Agent's decision making process.

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "MLAgents.CommunicatorObjects";
+option csharp_namespace = "mlagentsdev.CommunicatorObjects";
 package communicator_objects;
 
 message Header {

@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-import "mlagents/envs/communicator_objects/agent_action_proto.proto";
-import "mlagents/envs/communicator_objects/environment_parameters_proto.proto";
-import "mlagents/envs/communicator_objects/command_proto.proto";
+import "mlagentsdev/envs/communicator_objects/agent_action_proto.proto";
+import "mlagentsdev/envs/communicator_objects/environment_parameters_proto.proto";
+import "mlagentsdev/envs/communicator_objects/command_proto.proto";
 
-option csharp_namespace = "MLAgents.CommunicatorObjects";
+option csharp_namespace = "mlagentsdev.CommunicatorObjects";
 package communicator_objects;
 
 message UnityRLInput {

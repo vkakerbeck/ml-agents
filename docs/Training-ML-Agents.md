@@ -17,9 +17,9 @@ operations and the optimized weights selected during the training process. You
 can use the generated model file with the Learning Brain type in your Unity
 project to decide the best course of action for an agent.
 
-Use the command `mlagents-learn` to train your agents. This command is installed
-with the `mlagents` package and its implementation can be found at
-`ml-agents/mlagents/trainers/learn.py`. The [configuration file](#training-config-file),
+Use the command `mlagentsdev-learn` to train your agents. This command is installed
+with the `mlagentsdev` package and its implementation can be found at
+`ml-agents/mlagentsdev/trainers/learn.py`. The [configuration file](#training-config-file),
 like `config/trainer_config.yaml` specifies the hyperparameters used during training.
 You can edit this file with a text editor to add a specific configuration for
 each Brain.
@@ -28,22 +28,22 @@ For a broader overview of reinforcement learning, imitation learning and the
 ML-Agents training process, see [ML-Agents Toolkit
 Overview](ML-Agents-Overview.md).
 
-## Training with mlagents-learn
+## Training with mlagentsdev-learn
 
-Use the `mlagents-learn` command to train agents. `mlagents-learn` supports
+Use the `mlagentsdev-learn` command to train agents. `mlagentsdev-learn` supports
 training with
 [reinforcement learning](Background-Machine-Learning.md#reinforcement-learning),
 [curriculum learning](Training-Curriculum-Learning.md),
 and [behavioral cloning imitation learning](Training-Imitation-Learning.md).
 
-Run `mlagents-learn` from the command line to launch the training process. Use
+Run `mlagentsdev-learn` from the command line to launch the training process. Use
 the command line patterns and the `config/trainer_config.yaml` file to control
 training options.
 
 The basic command for training is:
 
 ```sh
-mlagents-learn <trainer-config-file> --env=<env_name> --run-id=<run-identifier> --train
+mlagentsdev-learn <trainer-config-file> --env=<env_name> --run-id=<run-identifier> --train
 ```
 
 where
@@ -68,7 +68,7 @@ contains agents ready to train. To perform the training:
    environment you built in step 1:
 
 ```sh
-mlagents-learn config/trainer_config.yaml --env=../../projects/Cats/CatsOnBicycles.app --run-id=cob_1 --train
+mlagentsdev-learn config/trainer_config.yaml --env=../../projects/Cats/CatsOnBicycles.app --run-id=cob_1 --train
 ```
 
 During a training session, the training program prints out and saves updates at
@@ -95,7 +95,7 @@ different values.
 
 In addition to passing the path of the Unity executable containing your training
 environment, you can set the following command line options when invoking
-`mlagents-learn`:
+`mlagentsdev-learn`:
 
 * `--env=<env>` - Specify an executable environment to train.
 * `--curriculum=<file>` – Specify a curriculum JSON file for defining the

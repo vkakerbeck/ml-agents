@@ -4,7 +4,7 @@ The ML-Agents toolkit saves statistics during learning session that you can view
 with a TensorFlow utility named,
 [TensorBoard](https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard).
 
-The `mlagents-learn` command saves training statistics to a folder named
+The `mlagentsdev-learn` command saves training statistics to a folder named
 `summaries`, organized by the `run-id` value you assign to a training session.
 
 In order to observe the training process, either during training or afterward,
@@ -20,7 +20,7 @@ start TensorBoard:
 
 4. Open a browser window and navigate to [localhost:6006](http://localhost:6006).
 
-**Note:** If you don't assign a `run-id` identifier, `mlagents-learn` uses the
+**Note:** If you don't assign a `run-id` identifier, `mlagentsdev-learn` uses the
 default string, "ppo". All the statistics will be saved to the same sub-folder
 and displayed as one session in TensorBoard. After a few runs, the displays can
 become difficult to interpret in this situation. You can delete the folders
@@ -31,14 +31,14 @@ runs you want to display. You can select multiple run-ids to compare statistics.
 The TensorBoard window also provides options for how to display and smooth
 graphs.
 
-When you run the training program, `mlagents-learn`, you can use the
+When you run the training program, `mlagentsdev-learn`, you can use the
 `--save-freq` option to specify how frequently to save the statistics.
 
 ## The ML-Agents toolkit training statistics
 
 The ML-Agents training program saves the following statistics:
 
-![Example TensorBoard Run](images/mlagents-TensorBoard.png)
+![Example TensorBoard Run](images/mlagentsdev-TensorBoard.png)
 
 ### Environment Statistics
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     [System.Serializable]
     public class ResetParameters : Dictionary<string, float>, ISerializationCallbackReceiver

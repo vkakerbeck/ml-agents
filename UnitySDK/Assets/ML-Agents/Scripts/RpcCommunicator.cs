@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using UnityEditor;
 #endif
 using UnityEngine;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// Responsible for communication with External using gRPC.
     public class RPCCommunicator : Communicator

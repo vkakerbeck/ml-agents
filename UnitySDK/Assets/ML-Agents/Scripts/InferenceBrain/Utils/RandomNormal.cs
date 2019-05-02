@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MLAgents.InferenceBrain.Utils
+namespace mlagentsdev.InferenceBrain.Utils
 {
     /// <summary>
     /// RandomNormal - A random number generator that produces normally distributed random numbers using the Marsaglia

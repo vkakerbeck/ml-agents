@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// Mapping between Tensor names and generators.

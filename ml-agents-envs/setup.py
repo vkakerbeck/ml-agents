@@ -18,7 +18,7 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
 
-    packages=['mlagents.envs', 'mlagents.envs.communicator_objects'],  # Required
+    packages=['mlagentsdev.envs', 'mlagentsdev.envs.communicator_objects'],  # Required
     zip_safe=False,
 
     install_requires=[

@@ -1,13 +1,13 @@
 using Google.Protobuf;
 using System.Net.Sockets;
 using UnityEngine;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 using System.Threading.Tasks;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace MLAgents
+namespace mlagentsdev
 {
 
     public class SocketCommunicator : Communicator

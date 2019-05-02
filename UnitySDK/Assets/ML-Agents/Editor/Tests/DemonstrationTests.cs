@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.IO.Abstractions.TestingHelpers;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class DemonstrationTests : MonoBehaviour
     {

@@ -2,9 +2,9 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.Experimental.AssetImporters;
-using MLAgents.InferenceBrain;
+using mlagentsdev.InferenceBrain;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Asset Importer of barracuda models.

@@ -2,7 +2,7 @@
 using UnityEditor;
 
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// CustomEditor for the Brain base class. Defines the default Inspector view for a Brain.

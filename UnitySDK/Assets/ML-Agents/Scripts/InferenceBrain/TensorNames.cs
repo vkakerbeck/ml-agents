@@ -1,4 +1,4 @@
-﻿namespace MLAgents.InferenceBrain
+﻿namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// Contains the names of the input and output Tensor for the Inference Brain.

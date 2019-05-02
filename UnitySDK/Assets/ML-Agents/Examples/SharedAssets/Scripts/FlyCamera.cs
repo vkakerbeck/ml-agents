@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace MLAgents
+namespace mlagentsdev
 {
 
     public class FlyCamera : MonoBehaviour

@@ -4,7 +4,7 @@ This tutorial walks through the process of creating a Unity Environment. A Unity
 Environment is an application built using the Unity Engine which can be used to
 train Reinforcement Learning Agents.
 
-![A simple ML-Agents environment](images/mlagents-NewTutSplash.png)
+![A simple ML-Agents environment](images/mlagentsdev-NewTutSplash.png)
 
 In this example, we will train a ball to roll to a randomly placed cube. The
 ball also learns to avoid falling off the platform.
@@ -56,7 +56,7 @@ importing the ML-Agents assets into it:
 
 Your Unity **Project** window should contain the following assets:
 
-![Project window](images/mlagents-NewProject.png)
+![Project window](images/mlagentsdev-NewProject.png)
 
 ## Create the Environment
 
@@ -78,7 +78,7 @@ agent to seek, and a Sphere to represent the Agent itself.
 name. This opens the **Object Picker** dialog so that you can choose a
 different material from the list of all materials currently in the project.)
 
-![The Floor in the Inspector window](images/mlagents-NewTutFloor.png)
+![The Floor in the Inspector window](images/mlagentsdev-NewTutFloor.png)
 
 ### Add the Target Cube
 
@@ -89,7 +89,7 @@ different material from the list of all materials currently in the project.)
 5. On the Cube's Mesh Renderer, expand the Materials property and change the
     default-material to *Block*.
 
-![The Target Cube in the Inspector window](images/mlagents-NewTutBlock.png)
+![The Target Cube in the Inspector window](images/mlagentsdev-NewTutBlock.png)
 
 ### Add the Agent Sphere
 
@@ -102,7 +102,7 @@ different material from the list of all materials currently in the project.)
 6. Click **Add Component**.
 7. Add the Physics/Rigidbody component to the Sphere.
 
-![The Agent GameObject in the Inspector window](images/mlagents-NewTutSphere.png)
+![The Agent GameObject in the Inspector window](images/mlagentsdev-NewTutSphere.png)
 
 Note that we will create an Agent subclass to add to this GameObject as a
 component later in the tutorial.
@@ -112,7 +112,7 @@ component later in the tutorial.
 1. Right click in Hierarchy window, select Create Empty.
 2. Name the GameObject "Academy"
 
-![The scene hierarchy](images/mlagents-NewTutHierarchy.png)
+![The scene hierarchy](images/mlagentsdev-NewTutHierarchy.png)
 
 You can adjust the camera angles to give a better view of the scene at runtime.
 The next steps will be to create and add the ML-Agent components.
@@ -138,7 +138,7 @@ Next, edit the new `RollerAcademy` script:
 1. In the Unity Project window, double-click the `RollerAcademy` script to open
     it in your code editor. (By default new scripts are placed directly in the
     **Assets** folder.)
-2. In the code editor, add the statement, `using MLAgents;`. 
+2. In the code editor, add the statement, `using mlagentsdev;`. 
 3. Change the base class from `MonoBehaviour` to `Academy`.
 4. Delete the `Start()` and `Update()` methods that were added by default.
 
@@ -147,7 +147,7 @@ otherwise control any objects in the environment so we have the simplest
 possible Academy implementation:
 
 ```csharp
-using MLAgents;
+using mlagentsdev;
 
 public class RollerAcademy : Academy { }
 ```
@@ -157,7 +157,7 @@ environment, so we don't need to change anything for the RollerAcademy component
 in the Inspector window. You may not have the RollerBrain in the Broadcast Hub yet, 
 more on that later. 
 
-![The Academy properties](images/mlagents-NewTutAcademy.png)
+![The Academy properties](images/mlagentsdev-NewTutAcademy.png)
 
 ## Add Brain Assets
 
@@ -171,7 +171,7 @@ To create the Brain:
     a **Player Brain**.
 2. Name them `RollerBallBrain` and `RollerBallPlayer` respectively.
 
-![Creating a Brain Asset](images/mlagents-NewTutBrain.png)
+![Creating a Brain Asset](images/mlagentsdev-NewTutBrain.png)
 
 We will come back to the Brain properties later, but leave the Model property
 of the `RollerBallBrain` as `None` for now. We will need to first train a 
@@ -191,7 +191,7 @@ Then, edit the new `RollerAgent` script:
 
 1. In the Unity Project window, double-click the `RollerAgent` script to open it
    in your code editor.
-2. In the editor, add the `using MLAgents;` statement and then change the base 
+2. In the editor, add the `using mlagentsdev;` statement and then change the base 
     class from `MonoBehaviour` to `Agent`.
 3. Delete the `Update()` method, but we will use the `Start()` function, so
     leave it alone for now.
@@ -235,7 +235,7 @@ So far, our RollerAgent script looks like:
 ```csharp
 using System.Collections.Generic;
 using UnityEngine;
-using MLAgents;
+using mlagentsdev;
 
 public class RollerAgent : Agent
 {
@@ -439,7 +439,7 @@ setting the Brain properties so that they are compatible with our Agent code.
 5. Drag the Target GameObject from the Hierarchy window to the RollerAgent
     Target field.
 
-![Assign the Brain to the RollerAgent](images/mlagents-NewTutAssignBrain.png)
+![Assign the Brain to the RollerAgent](images/mlagentsdev-NewTutAssignBrain.png)
 
 Finally, select the **RollerBallBrain** Asset in the **Project** window so that you can 
 see its properties in the Inspector window. Set the following properties:
@@ -502,7 +502,7 @@ the RollerBallBrain item in the **Broadcast Hub** list. From there, the process 
 the same as described in [Training ML-Agents](Training-ML-Agents.md).
 
 The hyperparameters for training are specified in the configuration file that you ls
-pass to the `mlagents-learn` program. Using the default settings specified 
+pass to the `mlagentsdev-learn` program. Using the default settings specified 
 in the `config/trainer_config.yaml` file (in your ml-agents folder), the
 RollerAgent takes about 300,000 steps to train. However, you can change the 
 following hyperparameters  to speed up training considerably (to under 20,000 steps):
@@ -524,19 +524,19 @@ in this simple environment, speeds up training.
 To train in the editor, run the following Python command from a Terminal or Console 
 window before pressing play:
 
-    mlagents-learn config/config.yaml --run-id=RollerBall-1 --train
+    mlagentsdev-learn config/config.yaml --run-id=RollerBall-1 --train
 
 (where `config.yaml` is a copy of `trainer_config.yaml` that you have edited 
 to change the `batch_size` and `buffer_size` hyperparameters for your brain.)
 
 **Note:** If you get a `command not found` error when running this command,  make sure 
-that you have followed the *Install Python and mlagents Package* section of the 
+that you have followed the *Install Python and mlagentsdev Package* section of the 
 ML-Agents [Installation](Installation.md) instructions.
 
 To monitor the statistics of Agent performance during training, use 
 [TensorBoard](Using-Tensorboard.md). 
 
-![TensorBoard statistics display](images/mlagents-RollerAgentStats.png)
+![TensorBoard statistics display](images/mlagentsdev-RollerAgentStats.png)
 
 In particular, the *cumulative_reward* and *value_estimate* statistics show how 
 well the Agent is achieving the task. In this example, the maximum reward an 
@@ -544,7 +544,7 @@ Agent can earn is 1.0, so these statistics approach that value when the Agent
 has successfully *solved* the problem.
 
 **Note:** If you use TensorBoard, always increment or change the `run-id` 
-you pass to the `mlagents-learn` command for each training run. If you use 
+you pass to the `mlagentsdev-learn` command for each training run. If you use 
 the same id value, the statistics for multiple runs are combined and become 
 difficult to interpret.
 

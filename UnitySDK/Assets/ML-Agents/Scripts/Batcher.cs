@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Google.Protobuf;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// The batcher is an RL specific class that makes sure that the information each object in 

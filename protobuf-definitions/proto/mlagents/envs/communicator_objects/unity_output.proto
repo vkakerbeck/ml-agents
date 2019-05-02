@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-import "mlagents/envs/communicator_objects/unity_rl_output.proto";
-import "mlagents/envs/communicator_objects/unity_rl_initialization_output.proto";
+import "mlagentsdev/envs/communicator_objects/unity_rl_output.proto";
+import "mlagentsdev/envs/communicator_objects/unity_rl_initialization_output.proto";
 
-option csharp_namespace = "MLAgents.CommunicatorObjects";
+option csharp_namespace = "mlagentsdev.CommunicatorObjects";
 package communicator_objects;
 
 message UnityOutput {

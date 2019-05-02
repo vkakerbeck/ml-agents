@@ -4,7 +4,7 @@ using UnityEngine;
 
 using System;
 
-namespace MLAgents
+namespace mlagentsdev
 {
 
     [Serializable]

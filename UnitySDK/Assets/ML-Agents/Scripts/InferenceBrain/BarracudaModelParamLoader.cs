@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Barracuda;
 using UnityEngine;
-using Tensor = MLAgents.InferenceBrain.Tensor;
+using Tensor = mlagentsdev.InferenceBrain.Tensor;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// Prepares the Tensors for the Learning Brain and exposes a list of failed checks if Model
@@ -571,7 +571,7 @@ public class BarracudaUtils
         return dest;
     }
     
-    public static Barracuda.Tensor ToBarracuda(MLAgents.InferenceBrain.Tensor src)
+    public static Barracuda.Tensor ToBarracuda(mlagentsdev.InferenceBrain.Tensor src)
     {
         Array linearArray = LinearizeArray(src.Data);
 

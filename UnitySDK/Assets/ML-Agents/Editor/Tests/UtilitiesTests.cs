@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 
-namespace MLAgents.Tests
+namespace mlagentsdev.Tests
 {
     public class UtilitiesTests
     {

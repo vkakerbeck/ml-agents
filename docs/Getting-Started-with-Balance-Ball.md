@@ -35,7 +35,7 @@ _environment_. In the context of Unity, an environment is a scene containing an
 Academy and one or more Brain and Agent objects, and, of course, the other
 entities that an agent interacts with.
 
-![Unity Editor](images/mlagents-3DBallHierarchy.png)
+![Unity Editor](images/mlagentsdev-3DBallHierarchy.png)
 
 **Note:** In Unity, the base object of everything in a scene is the
 _GameObject_. The GameObject is essentially a container for everything else,
@@ -195,7 +195,7 @@ has a recent [blog post](https://blog.openai.com/openai-baselines-ppo/)
 explaining it.
 
 To train the agents within the Ball Balance environment, we will be using the
-Python package. We have provided a convenient command called `mlagents-learn`
+Python package. We have provided a convenient command called `mlagentsdev-learn`
 which accepts arguments used to configure both training and inference phases.
 
 We can use `run_id` to identify the experiment and create a folder where the
@@ -208,7 +208,7 @@ saved to the same directory and will all be included on the same graph.
 To summarize, go to your command line, enter the `ml-agents` directory and type:
 
 ```sh
-mlagents-learn config/trainer_config.yaml --run-id=<run-identifier> --train
+mlagentsdev-learn config/trainer_config.yaml --run-id=<run-identifier> --train
 ```
 
 When the message _"Start training by pressing the Play button in the Unity
@@ -230,7 +230,7 @@ run you want to resume.
 
 ### Observing Training Progress
 
-Once you start training using `mlagents-learn` in the way described in the
+Once you start training using `mlagentsdev-learn` in the way described in the
 previous section, the `ml-agents` directory will contain a `summaries`
 directory. In order to observe the training process in more detail, you can use
 TensorBoard. From the command line run:
@@ -264,7 +264,7 @@ From TensorBoard, you will see the summary statistics:
   well the model is able to predict the value of each state. This should
   decrease during a successful training session.
 
-![Example TensorBoard Run](images/mlagents-TensorBoard.png)
+![Example TensorBoard Run](images/mlagentsdev-TensorBoard.png)
 
 ## Embedding the Trained Brain into the Unity Environment (Experimental)
 

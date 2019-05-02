@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Barracuda;
-using MLAgents.InferenceBrain;
+using mlagentsdev.InferenceBrain;
 using UnityEngine.Profiling;
-using Tensor = MLAgents.InferenceBrain.Tensor;
+using Tensor = mlagentsdev.InferenceBrain.Tensor;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     public enum InferenceDevice
     {
@@ -179,7 +179,7 @@ namespace MLAgents
             _tensorGenerator.GenerateTensors(_inferenceOutputs, currentBatchSize, agentInfos);
 
             // Execute the Model
-            Profiler.BeginSample($"MLAgents.{name}.ExecuteGraph");
+            Profiler.BeginSample($"mlagentsdev.{name}.ExecuteGraph");
             _engine.ExecuteGraph(_inferenceInputs, _inferenceOutputs);
             Profiler.EndSample();
 
@@ -198,7 +198,7 @@ namespace MLAgents
             var inputs = PrepareBarracudaInputs(_inferenceInputs);
 
             // Execute the Model
-            Profiler.BeginSample($"MLAgents.{name}.ExecuteGraph");
+            Profiler.BeginSample($"mlagentsdev.{name}.ExecuteGraph");
             _engine.Execute(inputs);
             Profiler.EndSample();
 

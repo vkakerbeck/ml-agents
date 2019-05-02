@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.IO.Abstractions;
 using Google.Protobuf;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Responsible for writing demonstration data to file.

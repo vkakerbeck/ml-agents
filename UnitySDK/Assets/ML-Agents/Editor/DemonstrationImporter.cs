@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev.CommunicatorObjects;
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.Experimental.AssetImporters;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// Asset Importer used to parse demonstration files.

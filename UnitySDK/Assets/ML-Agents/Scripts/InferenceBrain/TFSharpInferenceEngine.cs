@@ -7,7 +7,7 @@ using UnityEngine.Profiling;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// TFSharpInferenceEngine - Inference engine utilizing the TensorFlow Sharp package to run inference

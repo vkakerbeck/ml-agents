@@ -14,7 +14,7 @@ class as a Unity component) and extend the Decision interface.
 
 ```csharp
 using UnityEngine;
-using MLAgents;
+using mlagentsdev;
 
 public class HeuristicLogic : Decision
 {

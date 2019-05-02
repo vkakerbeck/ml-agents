@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using MLAgents;
+using mlagentsdev;
 
 public class AgentSoccer : Agent
 {

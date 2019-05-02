@@ -2,7 +2,7 @@
 using Assert = UnityEngine.Assertions.Assert;
 using UnityEngine;
 
-namespace MLAgents.InferenceBrain.Utils
+namespace mlagentsdev.InferenceBrain.Utils
 {
     /// <summary>
     /// Multinomial - Draws samples from a multinomial distribution in log space

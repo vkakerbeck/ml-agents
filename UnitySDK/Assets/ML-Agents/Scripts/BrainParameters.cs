@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     public enum SpaceType
     {

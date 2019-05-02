@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using MLAgents.InferenceBrain.Utils;
+using mlagentsdev.InferenceBrain.Utils;
 using UnityEngine;
 
-namespace MLAgents.InferenceBrain
+namespace mlagentsdev.InferenceBrain
 {
     /// <summary>
     /// The Applier for the Continuous Action output tensor. Tensor is assumed to contain the

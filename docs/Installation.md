@@ -43,7 +43,7 @@ the `ml-agents` package depends on.
 
 The `gym-unity` subdirectory contains a package to interface with OpenAI Gym.
 
-### Install Python and mlagents Package
+### Install Python and mlagentsdev Package
 
 In order to use ML-Agents toolkit, you need Python 3.6 along with the
 dependencies listed in the [setup.py file](../ml-agents/setup.py).
@@ -59,16 +59,16 @@ If your Python environment doesn't include `pip3`, see these
 [instructions](https://packaging.python.org/guides/installing-using-linux-tools/#installing-pip-setuptools-wheel-with-linux-package-managers)
 on installing it.
 
-To install the dependencies and `mlagents` Python package, run from the command line:
+To install the dependencies and `mlagentsdev` Python package, run from the command line:
 
 ```sh
-pip3 install mlagents
+pip3 install mlagentsdev
 ```
 
 Note that this will install `ml-agents` from PyPi, _not_ from the cloned repo. 
 If you installed this correctly, you should be able to run
-`mlagents-learn --help`, after which you will see the Unity logo and the command line
-parameters you can use with `mlagents-learn`. 
+`mlagentsdev-learn --help`, after which you will see the Unity logo and the command line
+parameters you can use with `mlagentsdev-learn`. 
 
 **Notes:**
 
@@ -93,8 +93,8 @@ pip3 install -e ./
 ```
 
 Running pip with the `-e` flag will let you make changes to the Python files directly and have those
-reflected when you run `mlagents-learn`. It is important to install these packages in this order as the
-`mlagents` package depends on `mlagents_envs`, and installing it in the other 
+reflected when you run `mlagentsdev-learn`. It is important to install these packages in this order as the
+`mlagentsdev` package depends on `mlagents_envs`, and installing it in the other 
 order will download `mlagents_envs` from PyPi. 
 
 ## Docker-based Installation

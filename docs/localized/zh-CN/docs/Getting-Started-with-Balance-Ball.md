@@ -32,7 +32,7 @@ ML-Agents 包含大量[示例环境](Learning-Environment-Examples.md)，
 agent 是一种观测并与_环境_交互的
 自主参与者 (actor)。在 ML-Agent的语境下，环境是一个包含一个 Academy， 一个或多个 Brain， 一个或多个Agent， Agent 与其他实体交互的场景。
 
-![Unity Editor](images/mlagents-3DBallHierarchy.png)
+![Unity Editor](images/mlagentsdev-3DBallHierarchy.png)
 
 **注意：**在 Unity 中，场景内所有元素的基础对象均为
 _游戏对象_(GameObject)。游戏对象本质上是其他任何元素
@@ -192,7 +192,7 @@ Unity 场景：
 5. 双击 `Scene` 文件以加载包含 Balance Ball 环境的
 场景。
 
-![3DBall 场景](images/mlagents-Open3DBall.png)
+![3DBall 场景](images/mlagentsdev-Open3DBall.png)
 
 由于我们要建立此环境来进行训练，因此我们需要
 将 agent 使用的 Brain 设置为 **External**。这样 agent 在
@@ -203,7 +203,7 @@ Unity 场景：
 2. 选择其子对象 `Ball3DBrain`。
 3. 在 Inspector 窗口中，将 **Brain Type** 设置为 `External`。
 
-![将 Brain 设置为 External](images/mlagents-SetExternalBrain.png)
+![将 Brain 设置为 External](images/mlagentsdev-SetExternalBrain.png)
 
 接下来，我们希望设置场景以便在训练过程启动我们的环境可执行文件时
 正确播放场景。这意味着：
@@ -227,7 +227,7 @@ Unity 场景：
     文件夹。
     b. 指定文件名，然后单击 **Save**。
 
-![编译窗口](images/mlagents-BuildWindow.png)
+![编译窗口](images/mlagentsdev-BuildWindow.png)
 
 ## 使用 Reinforcement Learning（强化学习）来训练 Brain
 
@@ -304,7 +304,7 @@ python3 python/learn.py <env_name> --run-id=<run-identifier> --train
 对每个状态的价值进行预测的能力相关。此项
 在成功训练期间应该减小。
 
-![TensorBoard 运行示例](images/mlagents-TensorBoard.png)
+![TensorBoard 运行示例](images/mlagentsdev-TensorBoard.png)
 
 ## 将经过训练的 Brain 嵌入到 Unity 环境中（测试功能）
 

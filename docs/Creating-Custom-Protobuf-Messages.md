@@ -4,7 +4,7 @@ Unity and Python communicate by sending protobuf messages to and from each other
 
 ## Implementing a Custom Message
 
-Assume the ml-agents repository is checked out to a folder named $MLAGENTS_ROOT. Whenever you change the fields of a custom message, you must run `$MLAGENTS_ROOT/protobuf-definitions/make.bat` to create C# and Python files corresponding to the new message. Follow the directions in [this file](../protobuf-definitions/README.md) for guidance. After running `$MLAGENTS_ROOT/protobuf-definitions/make.bat`, reinstall the Python package by running `pip install $MLAGENTS_ROOT/ml-agents` and make sure your Unity project is using the newly-generated version of `$MLAGENTS_ROOT/UnitySDK`.
+Assume the ml-agents repository is checked out to a folder named $mlagentsdev_ROOT. Whenever you change the fields of a custom message, you must run `$mlagentsdev_ROOT/protobuf-definitions/make.bat` to create C# and Python files corresponding to the new message. Follow the directions in [this file](../protobuf-definitions/README.md) for guidance. After running `$mlagentsdev_ROOT/protobuf-definitions/make.bat`, reinstall the Python package by running `pip install $mlagentsdev_ROOT/ml-agents` and make sure your Unity project is using the newly-generated version of `$mlagentsdev_ROOT/UnitySDK`.
 
 ## Custom Message Types
 
@@ -14,7 +14,7 @@ There are three custom message types currently supported - Custom Actions, Custo
 
 By default, the Python API sends actions to Unity in the form of a floating point list and an optional string-valued text action for each agent.
 
-You can define a custom action type, to either replace or augment the default, by adding fields to the `CustomAction` message, which you can do by editing the file `protobuf-definitions/proto/mlagents/envs/communicator_objects/custom_action.proto`. 
+You can define a custom action type, to either replace or augment the default, by adding fields to the `CustomAction` message, which you can do by editing the file `protobuf-definitions/proto/mlagentsdev/envs/communicator_objects/custom_action.proto`. 
 
 Instances of custom actions are set via the `custom_action` parameter of the `env.step`. An agent receives a custom action by defining a method with the signature:
 
@@ -29,7 +29,7 @@ The `custom_action.proto` file looks like:
 ```protobuf
 syntax = "proto3";
 
-option csharp_namespace = "MLAgents.CommunicatorObjects";
+option csharp_namespace = "mlagentsdev.CommunicatorObjects";
 package communicator_objects;
 
 message CustomAction {
@@ -47,8 +47,8 @@ message CustomAction {
 The Python instance of the custom action looks like:
 
 ```python
-from mlagents.envs.communicator_objects import CustomAction
-env = mlagents.envs.UnityEnvironment(...)
+from mlagentsdev.envs.communicator_objects import CustomAction
+env = mlagentsdev.envs.UnityEnvironment(...)
 ...
 action = CustomAction(direction=CustomAction.NORTH, walkAmount=2.0)
 env.step(custom_action=action)
@@ -58,8 +58,8 @@ And the agent code looks like:
 
 ```csharp
 ...
-using MLAgents;
-using MLAgents.CommunicatorObjects;
+using mlagentsdev;
+using mlagentsdev.CommunicatorObjects;
 
 class MyAgent : Agent {
     ...
@@ -106,7 +106,7 @@ message CustomResetParameters {
 The Python instance of the custom reset parameter looks like
 
 ```python
-from mlagents.envs.communicator_objects import CustomResetParameters
+from mlagentsdev.envs.communicator_objects import CustomResetParameters
 env = ...
 pos = CustomResetParameters.Position(x=1, y=1, z=2)
 color = CustomResetParameters.Color(r=.5, g=.1, b=1.0)

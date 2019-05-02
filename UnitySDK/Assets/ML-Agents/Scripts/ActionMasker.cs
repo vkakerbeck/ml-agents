@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     public class ActionMasker
     {

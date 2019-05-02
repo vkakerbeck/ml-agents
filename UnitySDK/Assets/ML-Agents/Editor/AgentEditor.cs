@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace MLAgents
+namespace mlagentsdev
 {
 /*
  This code is meant to modify the behavior of the inspector on Brain Components.

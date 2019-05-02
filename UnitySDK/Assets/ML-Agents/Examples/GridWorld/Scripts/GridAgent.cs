@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Linq;
-using MLAgents;
+using mlagentsdev;
 
 public class GridAgent : Agent
 {

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEditor.SceneManagement;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// PropertyDrawer for ResetParameters. Defines how ResetParameters are displayed in the

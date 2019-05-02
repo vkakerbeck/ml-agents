@@ -50,7 +50,7 @@ To verify that all steps worked correctly:
 7. Test the instance setup from Python using:
 
 ```python
-from mlagents.envs import UnityEnvironment
+from mlagentsdev.envs import UnityEnvironment
 
 env = UnityEnvironment(<your_env>)
 ```
@@ -71,7 +71,7 @@ To run your training on the VM:
 3. Run the following command:
 
 ```sh
-mlagents-learn <trainer_config> --env=<your_app> --run-id=<run_id> --train
+mlagentsdev-learn <trainer_config> --env=<your_app> --run-id=<run_id> --train
 ```
 
 Where `<your_app>` is the path to your app (i.e.

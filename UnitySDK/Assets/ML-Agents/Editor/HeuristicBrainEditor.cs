@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace MLAgents
+namespace mlagentsdev
 {
     /// <summary>
     /// CustomEditor for the Heuristic Brain class. Defines the default Inspector view for a

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "mlagents/envs/communicator_objects/custom_observation.proto";
+import "mlagentsdev/envs/communicator_objects/custom_observation.proto";
 
-option csharp_namespace = "MLAgents.CommunicatorObjects";
+option csharp_namespace = "mlagentsdev.CommunicatorObjects";
 package communicator_objects;
 
 message AgentInfoProto {
