@@ -49,6 +49,19 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
     trainer_config_path = run_options['<trainer-config-path>']
+
+    reset_conf = {'tower-seed': -1.0,
+                'starting-floor': 0.0,
+                'dense-reward': 0.0,
+                'lighting-type': 2.0,
+                'visual-theme': 1.0,
+                'agent-perspective': 0.0,
+                'allowed-rooms': 2.0,
+                'allowed-modules': 2.0,
+                'allowed-floors': 2.0,
+                'total-floors': 100.0,
+                'default-theme': 0.0}
+    print(reset_conf)
     # Recognize and use docker volume if one is passed as an argument
     if not docker_target_name:
         model_path = './models/{run_id}-{sub_id}'.format(run_id=run_id, sub_id=sub_id)
@@ -76,7 +89,8 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
         docker_target_name,
         no_graphics,
         run_seed,
-        base_port + (sub_id * num_envs)
+        base_port + (sub_id * num_envs),
+        reset_conf
     )
     env = SubprocessUnityEnvironment(env_factory, num_envs)
     maybe_meta_curriculum = try_create_meta_curriculum(curriculum_folder, env)
@@ -155,7 +169,8 @@ def create_environment_factory(
         docker_target_name: str,
         no_graphics: bool,
         seed: Optional[int],
-        start_port: int
+        start_port: int,
+        reset_conf: dict
 ) -> Callable[[int], BaseUnityEnvironment]:
     if env_path is not None:
         # Strip out executable extensions if passed
@@ -189,7 +204,8 @@ def create_environment_factory(
             seed=env_seed,
             docker_training=docker_training,
             no_graphics=no_graphics,
-            base_port=start_port
+            base_port=start_port,
+            reset_config=reset_conf
         )
     return create_unity_environment
 

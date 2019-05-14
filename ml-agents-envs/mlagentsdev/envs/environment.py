@@ -33,7 +33,8 @@ class UnityEnvironment(BaseUnityEnvironment):
                  seed: int = 0,
                  docker_training: bool = False,
                  no_graphics: bool = False,
-                 timeout_wait: int = 30):
+                 timeout_wait: int = 30,
+                 reset_config=None):
         """
         Starts a new unity environment and establishes a connection with the environment.
         Notice: Currently communication between Unity and Python takes place over an open socket without authentication.
@@ -99,7 +100,10 @@ class UnityEnvironment(BaseUnityEnvironment):
                 self._external_brain_names += [brain_param.brain_name]
         self._num_brains = len(self._brain_names)
         self._num_external_brains = len(self._external_brain_names)
-        self._resetParameters = dict(aca_params.environment_parameters.float_parameters)
+        if reset_config == None:
+            self._resetParameters = dict(aca_params.environment_parameters.float_parameters)
+        else:
+            self._resetParameters = reset_config
         logger.info("\n'{0}' started successfully!\n{1}".format(self._academy_name, str(self)))
         if self._num_external_brains == 0:
             logger.warning(" No Learning Brains set to train found in the Unity Environment. "
