@@ -54,7 +54,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     if reset_config_path == None:
         reset_conf = {'tower-seed': -1.0,
                     'starting-floor': 0.0,
-                    'dense-reward': 0.0,
+                    'dense-reward': 1.0,
                     'lighting-type': 2.0,
                     'visual-theme': 1.0,
                     'agent-perspective': 0.0,
