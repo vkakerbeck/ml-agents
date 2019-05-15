@@ -1,0 +1,11 @@
+tower-seed: -1.0
+starting-floor: 0.0
+dense-reward: 0.0
+lighting-type: 2.0
+visual-theme: 1.0
+agent-perspective: 0.0
+allowed-rooms: 2.0
+allowed-modules: 2.0
+allowed-floors: 2.0
+total-floors: 100.0
+default-theme: 0.0

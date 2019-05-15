@@ -49,19 +49,22 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
     trainer_config_path = run_options['<trainer-config-path>']
+    reset_config_path = (run_options['--reset-config'] if run_options['--reset-config'] != None else None)
 
-    reset_conf = {'tower-seed': -1.0,
-                'starting-floor': 0.0,
-                'dense-reward': 0.0,
-                'lighting-type': 2.0,
-                'visual-theme': 1.0,
-                'agent-perspective': 0.0,
-                'allowed-rooms': 2.0,
-                'allowed-modules': 2.0,
-                'allowed-floors': 2.0,
-                'total-floors': 100.0,
-                'default-theme': 0.0}
-    print(reset_conf)
+    if reset_config_path == None:
+        reset_conf = {'tower-seed': -1.0,
+                    'starting-floor': 0.0,
+                    'dense-reward': 0.0,
+                    'lighting-type': 2.0,
+                    'visual-theme': 1.0,
+                    'agent-perspective': 0.0,
+                    'allowed-rooms': 2.0,
+                    'allowed-modules': 2.0,
+                    'allowed-floors': 2.0,
+                    'total-floors': 100.0,
+                    'default-theme': 0.0}
+    else:
+        reset_conf = load_config(reset_config_path)
     # Recognize and use docker volume if one is passed as an argument
     if not docker_target_name:
         model_path = './models/{run_id}-{sub_id}'.format(run_id=run_id, sub_id=sub_id)
@@ -253,6 +256,7 @@ def main():
       --docker-target-name=<dt>  Docker volume to store training-specific files [default: None].
       --no-graphics              Whether to run the environment in no-graphics mode [default: False].
       --debug                    Whether to run ML-Agents in debug mode with detailed logging [default: False].
+      --reset-config=<directory> Path to config file for environment reset [default: False].
     '''
 
     options = docopt(_USAGE)
