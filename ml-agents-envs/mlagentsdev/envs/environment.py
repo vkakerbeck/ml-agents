@@ -33,7 +33,7 @@ class UnityEnvironment(BaseUnityEnvironment):
                  seed: int = 0,
                  docker_training: bool = False,
                  no_graphics: bool = False,
-                 timeout_wait: int = 30,
+                 timeout_wait: int = 6000,
                  reset_config=None):
         """
         Starts a new unity environment and establishes a connection with the environment.

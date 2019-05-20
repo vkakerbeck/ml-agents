@@ -8,6 +8,7 @@ from multiprocessing import Process, Pipe
 from multiprocessing.connection import Connection
 from mlagentsdev.envs.base_unity_environment import BaseUnityEnvironment
 from mlagentsdev.envs import AllBrainInfo, UnityEnvironmentException
+import time
 
 
 class EnvironmentCommand(NamedTuple):
@@ -68,6 +69,7 @@ def worker(parent_conn: Connection, pickled_env_factory: str, worker_id: int):
             elif cmd.name == 'reset_parameters':
                 _send_response('reset_parameters', env.reset_parameters)
             elif cmd.name == 'reset':
+                print('here')
                 all_brain_info = env.reset(cmd.payload[0], cmd.payload[1])
                 _send_response('reset', all_brain_info)
             elif cmd.name == 'global_done':
@@ -89,6 +91,8 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
         self.waiting = False
         for worker_id in range(n_env):
             self.envs.append(self.create_worker(worker_id, env_factory))
+            time.sleep(2)
+            print(worker_id)
 
     @staticmethod
     def create_worker(
@@ -205,3 +209,5 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
     def _broadcast_message(self, name: str, payload = None):
         for env in self.envs:
             env.send(name, payload)
+            if (name=='reset'):
+                time.sleep(0.02)
