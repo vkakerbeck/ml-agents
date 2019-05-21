@@ -7,5 +7,5 @@ agent-perspective: 0.0
 allowed-rooms: 2.0
 allowed-modules: 2.0
 allowed-floors: 2.0
-total-floors: 100.0
+total-floors: 20.0
 default-theme: 0.0
