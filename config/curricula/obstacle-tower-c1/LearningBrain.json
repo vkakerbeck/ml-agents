@@ -1,7 +1,7 @@
 {
     "measure" : "reward",
     "thresholds" : [1.0, 1.5, 2.0, 2.5, 5.0, 10.0],
-    "min_lesson_length": 1000,
+    "min_lesson_length": 10,
     "signal_smoothing" : true,
     "parameters" :
     {
@@ -14,7 +14,7 @@
         "allowed-rooms": [0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0],
         "allowed-modules": [0.0, 0.0, 1.0, 2.0, 2.0, 2.0, 2.0],
         "allowed-floors": [0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
-        "total-floors": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0],
+        "total-floors": [3.0, 3.0, 5.0, 5.0, 10.0, 20.0, 100.0],
         "default-theme": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     }
 }
