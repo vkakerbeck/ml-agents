@@ -1,7 +1,7 @@
 {
     "measure" : "reward",
     "thresholds" : [1.0, 1.5, 2.0, 2.5, 5.0, 10.0],
-    "min_lesson_length": 1000,
+    "min_lesson_length": 10,
     "signal_smoothing" : true,
     "parameters" :
     {
@@ -10,7 +10,7 @@
         "dense-reward": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
         "lighting-type": [0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0],
         "visual-theme": [0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
-        "agent-perspective": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "agent-perspective": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
         "allowed-rooms": [0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0],
         "allowed-modules": [0.0, 0.0, 1.0, 2.0, 2.0, 2.0, 2.0],
         "allowed-floors": [0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
