@@ -210,4 +210,4 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
         for env in self.envs:
             env.send(name, payload)
             if (name=='reset'):
-                time.sleep(0.02)
+                time.sleep(0.5)
