@@ -57,7 +57,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                     'dense-reward': 1.0,
                     'lighting-type': 2.0,
                     'visual-theme': 1.0,
-                    'agent-perspective': 0.0,
+                    'agent-perspective': 1.0,
                     'allowed-rooms': 2.0,
                     'allowed-modules': 2.0,
                     'allowed-floors': 2.0,
