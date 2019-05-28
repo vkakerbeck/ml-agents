@@ -58,6 +58,8 @@ class PPOTrainer(Trainer):
         self.cumulative_rewards = {}
         self._reward_buffer = deque(maxlen=reward_buff_cap)
         self.episode_steps = {}
+        self.vis_obs_collection = []
+        self.vec_obs_collection = []
 
     def __str__(self):
         return '''Hyperparameters for the PPO Trainer of brain {0}: \n{1}'''.format(
@@ -189,10 +191,12 @@ class PPOTrainer(Trainer):
                     for i, _ in enumerate(stored_info.visual_observations):
                         self.training_buffer[agent_id]['visual_obs%d' % i].append(
                             stored_info.visual_observations[i][idx])
+                        #self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
                     if self.policy.use_vec_obs:
                         self.training_buffer[agent_id]['vector_obs'].append(stored_info.vector_observations[idx])
+                        #self.vec_obs_collection.append(stored_info.vector_observations[idx])
                         self.training_buffer[agent_id]['next_vector_in'].append(
                             next_info.vector_observations[next_idx])
                     if self.policy.use_recurrent:
@@ -243,6 +247,7 @@ class PPOTrainer(Trainer):
         """
         self.trainer_metrics.start_experience_collection_timer()
         info = new_info[self.brain_name]
+
         for l in range(len(info.agents)):
             agent_actions = self.training_buffer[info.agents[l]]['actions']
             if ((info.local_done[l] or len(agent_actions) > self.trainer_parameters['time_horizon'])
@@ -282,12 +287,21 @@ class PPOTrainer(Trainer):
                     self.reward_buffer.appendleft(self.cumulative_rewards.get(agent_id, 0))
                     self.stats['Environment/Episode Length'].append(
                         self.episode_steps.get(agent_id, 0))
+                    """print("Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
+                    if np.max(np.array(self.vec_obs_collection)[:,-1]) > 10 or np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
+                        print("saved observations")
+                        np.save("./observations/visobs"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
+                        np.save("./observations/vecobs"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
+
+                    self.vis_obs_collection = []
+                    self.vec_obs_collection = []"""
                     self.cumulative_rewards[agent_id] = 0
                     self.episode_steps[agent_id] = 0
                     if self.use_curiosity:
                         self.stats['Policy/Curiosity Reward'].append(
                             self.intrinsic_rewards.get(agent_id, 0))
                         self.intrinsic_rewards[agent_id] = 0
+
         self.trainer_metrics.end_experience_collection_timer()
 
     def end_episode(self):

@@ -254,11 +254,12 @@ class TrainerController(object):
                 and any(lessons_incremented.values())):
             curr_info = self._reset_env(env)
             for brain_name, trainer in self.trainers.items():
-                trainer.end_episode()#XX
+                trainer.end_episode()
             for brain_name, changed in lessons_incremented.items():
                 if changed:
                     self.trainers[brain_name].reward_buffer.clear()
         elif env.global_done:
+            print("global done")
             curr_info = self._reset_env(env)
             for brain_name, trainer in self.trainers.items():
                 trainer.end_episode()

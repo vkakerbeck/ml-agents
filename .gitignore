@@ -13,6 +13,7 @@
 # Tensorflow Model Info
 /models
 /summaries
+/observations
 
 # Training environments
 /envs
