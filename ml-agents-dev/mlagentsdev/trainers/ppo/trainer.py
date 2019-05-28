@@ -45,7 +45,7 @@ class PPOTrainer(Trainer):
         self.policy = PPOPolicy(seed, brain, trainer_parameters,
                                 self.is_training, load)
 
-        stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],
+        stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],'Environment/Keys':[],'Environment/Floor':[],
                  'Policy/Value Estimate': [], 'Policy/Entropy': [], 'Losses/Value Loss': [],
                  'Losses/Policy Loss': [], 'Policy/Learning Rate': []}
         if self.use_curiosity:
@@ -292,9 +292,17 @@ class PPOTrainer(Trainer):
                     self.reward_buffer.appendleft(self.cumulative_rewards.get(agent_id, 0))
                     self.stats['Environment/Episode Length'].append(
                         self.episode_steps.get(agent_id, 0))
-                    if np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
-                        print("key collected")
-                    print("Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
+                    try:
+                        if np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
+                            print("key collected by agent "+str(agent_id)+" He reached floor "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
+                            self.stats['Environment/Keys'].append(np.sum(np.max(np.array(self.vec_obs_collection)[:,1:-2],axis=0)))
+                            print(np.sum(np.max(np.array(self.vec_obs_collection)[:,1:-2],axis=0)))
+                        else:
+                            self.stats['Environment/Keys'].append(0)
+                    except:
+                        print(np.array(self.vec_obs_collection))
+                    #print("Agent "+str(agent_id)+": Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
+                    self.stats['Environment/Floor'].append(np.max(np.array(self.vec_obs_collection)[:,-1]))
                     if self.save_obs:
                         if (np.max(np.array(self.vec_obs_collection)[:,-1]) > 5 and np.max(np.array(self.vec_obs_collection)[:,1:-2])>0):
                             print("saved observations")
