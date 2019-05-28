@@ -48,6 +48,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     lesson = int(run_options['--lesson'])
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
+    save_obs = run_options['--save-obs']
     trainer_config_path = run_options['<trainer-config-path>']
     reset_config_path = (run_options['--reset-config'] if run_options['--reset-config'] != None else None)
 
@@ -103,7 +104,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
-                           run_seed, fast_simulation)
+                           run_seed, fast_simulation,save_obs)
 
     # Signal that environment has been launched.
     process_queue.put(True)
@@ -255,6 +256,7 @@ def main():
       --num-envs=<n>             Number of parallel environments to use for training [default: 1]
       --docker-target-name=<dt>  Docker volume to store training-specific files [default: None].
       --no-graphics              Whether to run the environment in no-graphics mode [default: False].
+      --save-obs                 Whether to save the observations of good runs [default:False].
       --debug                    Whether to run ML-Agents in debug mode with detailed logging [default: False].
       --reset-config=<directory> Path to config file for environment reset [default: False].
     '''
@@ -268,6 +270,7 @@ def main():
         env_logger.setLevel('DEBUG')
     num_runs = int(options['--num-runs'])
     seed = int(options['--seed'])
+
 
     if options['--env'] == 'None' and num_runs > 1:
         raise TrainerError('It is not possible to launch more than one concurrent training session '

@@ -21,7 +21,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id):
+                 load, seed, run_id, save_obs):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -29,6 +29,7 @@ class PPOTrainer(Trainer):
         :param load: Whether the model should be loaded.
         :param seed: The seed the model will be initialized with
         :param run_id: The The identifier of the current run
+        :param save_obs: Whether to save observations of good runs.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -58,8 +59,11 @@ class PPOTrainer(Trainer):
         self.cumulative_rewards = {}
         self._reward_buffer = deque(maxlen=reward_buff_cap)
         self.episode_steps = {}
-        self.vis_obs_collection = []
+        self.save_obs = save_obs
+        if self.save_obs:
+            self.vis_obs_collection = []
         self.vec_obs_collection = []
+
 
     def __str__(self):
         return '''Hyperparameters for the PPO Trainer of brain {0}: \n{1}'''.format(
@@ -191,12 +195,13 @@ class PPOTrainer(Trainer):
                     for i, _ in enumerate(stored_info.visual_observations):
                         self.training_buffer[agent_id]['visual_obs%d' % i].append(
                             stored_info.visual_observations[i][idx])
-                        #self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
+                        if self.save_obs:
+                            self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
                     if self.policy.use_vec_obs:
                         self.training_buffer[agent_id]['vector_obs'].append(stored_info.vector_observations[idx])
-                        #self.vec_obs_collection.append(stored_info.vector_observations[idx])
+                        self.vec_obs_collection.append(stored_info.vector_observations[idx])
                         self.training_buffer[agent_id]['next_vector_in'].append(
                             next_info.vector_observations[next_idx])
                     if self.policy.use_recurrent:
@@ -287,14 +292,17 @@ class PPOTrainer(Trainer):
                     self.reward_buffer.appendleft(self.cumulative_rewards.get(agent_id, 0))
                     self.stats['Environment/Episode Length'].append(
                         self.episode_steps.get(agent_id, 0))
-                    """print("Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
-                    if np.max(np.array(self.vec_obs_collection)[:,-1]) > 10 or np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
-                        print("saved observations")
-                        np.save("./observations/visobs"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
-                        np.save("./observations/vecobs"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
+                    if np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
+                        print("key collected")
+                    print("Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
+                    if self.save_obs:
+                        if (np.max(np.array(self.vec_obs_collection)[:,-1]) > 5 and np.max(np.array(self.vec_obs_collection)[:,1:-2])>0):
+                            print("saved observations")
+                            np.save("./observations/visobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
+                            np.save("./observations/vecobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
 
-                    self.vis_obs_collection = []
-                    self.vec_obs_collection = []"""
+                        self.vis_obs_collection = []
+                    self.vec_obs_collection = []
                     self.cumulative_rewards[agent_id] = 0
                     self.episode_steps[agent_id] = 0
                     if self.use_curiosity:

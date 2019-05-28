@@ -35,7 +35,8 @@ class TrainerController(object):
                  lesson: Optional[int],
                  external_brains: Dict[str, BrainParameters],
                  training_seed: int,
-                 fast_simulation: bool):
+                 fast_simulation: bool,
+                 save_obs: bool):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -48,6 +49,7 @@ class TrainerController(object):
         :param lesson: Start learning from this lesson.
         :param external_brains: dictionary of external brain names to BrainInfo objects.
         :param training_seed: Seed to use for Numpy and Tensorflow random number generation.
+        :param save_obs: Whether to save observations of good runs.
         """
 
         self.model_path = model_path
@@ -68,6 +70,7 @@ class TrainerController(object):
         self.seed = training_seed
         self.training_start_time = time()
         self.fast_simulation = fast_simulation
+        self.save_obs = save_obs
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
 
@@ -160,7 +163,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id)
+                    self.run_id,self.save_obs)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '
