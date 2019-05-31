@@ -21,7 +21,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs):
+                 load, seed, run_id, save_obs, num_envs):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -30,6 +30,7 @@ class PPOTrainer(Trainer):
         :param seed: The seed the model will be initialized with
         :param run_id: The The identifier of the current run
         :param save_obs: Whether to save observations of good runs.
+        :param num_envs: Number of parallel environments.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -62,7 +63,8 @@ class PPOTrainer(Trainer):
         self.save_obs = save_obs
         if self.save_obs:
             self.vis_obs_collection = []
-        self.vec_obs_collection = []
+        self.vec_obs_collection = [[] for y in range(num_envs)]#XX
+        self.keys_collected = np.zeros((num_envs))
 
 
     def __str__(self):
@@ -195,13 +197,13 @@ class PPOTrainer(Trainer):
                     for i, _ in enumerate(stored_info.visual_observations):
                         self.training_buffer[agent_id]['visual_obs%d' % i].append(
                             stored_info.visual_observations[i][idx])
-                        if self.save_obs:
+                        if (self.save_obs and int(str(agent_id)[0])==0):
                             self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
                     if self.policy.use_vec_obs:
                         self.training_buffer[agent_id]['vector_obs'].append(stored_info.vector_observations[idx])
-                        self.vec_obs_collection.append(stored_info.vector_observations[idx])
+                        self.vec_obs_collection[int(str(agent_id)[0])].append(stored_info.vector_observations[idx])
                         self.training_buffer[agent_id]['next_vector_in'].append(
                             next_info.vector_observations[next_idx])
                     if self.policy.use_recurrent:
@@ -225,9 +227,21 @@ class PPOTrainer(Trainer):
                     self.training_buffer[agent_id]['masks'].append(1.0)
                     if self.use_curiosity:
                         self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx] +
-                                                                         intrinsic_rewards[next_idx])
+                                                                         intrinsic_rewards[next_idx])#XXX
                     else:
-                        self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
+                        #self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])#+np.sum(np.array(self.vec_obs_collection)[-1,1:-2])
+                        if (len(np.array(self.vec_obs_collection)[int(str(agent_id)[0])])>1):
+                            #if (next_info.rewards[next_idx]>0 or (np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-2,1:-2])==0)):
+                            #    print("agent "+str(agent_id)[0]+"  "+str(next_info.rewards[next_idx])+"  "+str(np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-1,1:-2]))+ "  "+str(np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-2,1:-2])))
+                            if (np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-2,1:-2])==0):
+                                print("Key Collected by agent "+str(agent_id)[0])
+                                self.keys_collected[int(str(agent_id)[0])] = self.keys_collected[int(str(agent_id)[0])] + 1
+                                print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
+                                self.training_buffer[agent_id]['rewards'].append(1)
+                            else:
+                                self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
+                        else:
+                            self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
                     self.training_buffer[agent_id]['action_probs'].append(a_dist[idx])
                     self.training_buffer[agent_id]['value_estimates'].append(value[idx][0])
                     if agent_id not in self.cumulative_rewards:
@@ -293,24 +307,25 @@ class PPOTrainer(Trainer):
                     self.stats['Environment/Episode Length'].append(
                         self.episode_steps.get(agent_id, 0))
                     try:
-                        if np.max(np.array(self.vec_obs_collection)[:,1:-2])>0:
-                            print("key collected by agent "+str(agent_id)+" He reached floor "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
-                            self.stats['Environment/Keys'].append(np.sum(np.max(np.array(self.vec_obs_collection)[:,1:-2],axis=0)))
-                            print(np.sum(np.max(np.array(self.vec_obs_collection)[:,1:-2],axis=0)))
-                        else:
-                            self.stats['Environment/Keys'].append(0)
+                        if np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0:
+                            print("key collected by agent "+str(agent_id)+" He reached floor "+str(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,-1])))
+                        self.stats['Environment/Keys'].append(np.mean(self.keys_collected))
+                        self.stats['Environment/Floor'].append(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,-1]))
+                        print("Agent "+str(agent_id)[0]+": Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+
+                        str(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,-1]))+" Keys collected: "+str(self.keys_collected))#str(np.sum(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2],axis=0))))
                     except:
-                        print(np.array(self.vec_obs_collection))
-                    #print("Agent "+str(agent_id)+": Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+str(np.max(np.array(self.vec_obs_collection)[:,-1])))
-                    self.stats['Environment/Floor'].append(np.max(np.array(self.vec_obs_collection)[:,-1]))
-                    if self.save_obs:
-                        if (np.max(np.array(self.vec_obs_collection)[:,-1]) > 5 and np.max(np.array(self.vec_obs_collection)[:,1:-2])>0):
+                        pass
+                        #print(np.array(self.vec_obs_collection))
+
+                    if self.save_obs:#XX
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,-1]) > 5 and np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             print("saved observations")
                             np.save("./observations/visobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
                             np.save("./observations/vecobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
 
                         self.vis_obs_collection = []
-                    self.vec_obs_collection = []
+                    self.vec_obs_collection[int(str(agent_id)[0])] = []
+                    self.keys_collected[int(str(agent_id)[0])] = 0
                     self.cumulative_rewards[agent_id] = 0
                     self.episode_steps[agent_id] = 0
                     if self.use_curiosity:

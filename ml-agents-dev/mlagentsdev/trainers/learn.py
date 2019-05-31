@@ -104,7 +104,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
-                           run_seed, fast_simulation,save_obs)
+                           run_seed, fast_simulation,save_obs,num_envs)
 
     # Signal that environment has been launched.
     process_queue.put(True)
