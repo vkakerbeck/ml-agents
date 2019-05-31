@@ -56,7 +56,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
         reset_conf = {'tower-seed': -1.0,
                     'starting-floor': 0.0,
                     'dense-reward': 1.0,
-                    'lighting-type': 2.0,
+                    'lighting-type': 1.0,
                     'visual-theme': 1.0,
                     'agent-perspective': 1.0,
                     'allowed-rooms': 2.0,
