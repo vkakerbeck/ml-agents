@@ -62,7 +62,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                     'allowed-rooms': 2.0,
                     'allowed-modules': 2.0,
                     'allowed-floors': 2.0,
-                    'total-floors': 100.0,
+                    'total-floors': 20.0,
                     'default-theme': 0.0}
     else:
         reset_conf = load_config(reset_config_path)
