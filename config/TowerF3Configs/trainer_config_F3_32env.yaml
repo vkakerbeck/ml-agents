@@ -1,8 +1,8 @@
 default:
     trainer: ppo
-    batch_size: 512
+    batch_size: 256
     beta: 5.0e-3
-    buffer_size: 512
+    buffer_size: 256
     epsilon: 0.2
     gamma: 0.999
     hidden_units: 256
