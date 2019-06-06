@@ -237,7 +237,7 @@ class PPOTrainer(Trainer):
                                 print("Key Collected by agent "+str(agent_id).split("-")[0])
                                 self.keys_collected[int(str(agent_id).split("-")[0])] = self.keys_collected[int(str(agent_id).split("-")[0])] + 1
                                 print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
-                                self.training_buffer[agent_id]['rewards'].append(1)
+                                self.training_buffer[agent_id]['rewards'].append(10)
                             else:
                                 self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
                         else:
