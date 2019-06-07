@@ -21,7 +21,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs):
+                 load, seed, run_id, save_obs, num_envs, augment_r):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -31,6 +31,7 @@ class PPOTrainer(Trainer):
         :param run_id: The The identifier of the current run
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
+        :param augment_r: Whether to augment the reward.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -48,7 +49,7 @@ class PPOTrainer(Trainer):
 
         stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],'Environment/Keys':[],'Environment/Floor':[],
                  'Policy/Value Estimate': [], 'Policy/Entropy': [], 'Losses/Value Loss': [],
-                 'Losses/Policy Loss': [], 'Policy/Learning Rate': []}
+                 'Losses/Policy Loss': [], 'Policy/Learning Rate': [], 'Policy/Overall Reward': []}
         if self.use_curiosity:
             stats['Losses/Forward Loss'] = []
             stats['Losses/Inverse Loss'] = []
@@ -61,10 +62,12 @@ class PPOTrainer(Trainer):
         self._reward_buffer = deque(maxlen=reward_buff_cap)
         self.episode_steps = {}
         self.save_obs = save_obs
+        self.augment_r = augment_r
         if self.save_obs:
             self.vis_obs_collection = []
         self.vec_obs_collection = [[] for y in range(num_envs)]#XX
         self.keys_collected = np.zeros((num_envs))
+        self.overall_reward = []
 
 
     def __str__(self):
@@ -159,7 +162,8 @@ class PPOTrainer(Trainer):
                               memories, rewards, agents, local_dones, prev_vector_actions,
                               prev_text_actions, max_reacheds, action_masks)
         return curr_info
-
+    def getKeyP(self, img):
+        return ((img[:,:,0]>0.60)&(img[:,:,1]>0.4)&(img[:,:,2]<0.3))
     def add_experiences(self, curr_all_info: AllBrainInfo, next_all_info: AllBrainInfo, take_action_outputs):
         """
         Adds experiences to each agent's experience history.
@@ -225,9 +229,11 @@ class PPOTrainer(Trainer):
                     self.training_buffer[agent_id]['actions'].append(actions[idx])
                     self.training_buffer[agent_id]['prev_action'].append(stored_info.previous_vector_actions[idx])
                     self.training_buffer[agent_id]['masks'].append(1.0)
+                    reward = 0
                     if self.use_curiosity:
-                        self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx] +
-                                                                         intrinsic_rewards[next_idx])#XXX
+                        #self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx] +
+                            #                                             intrinsic_rewards[next_idx])#XXX
+                        reward = reward + next_info.rewards[next_idx] + intrinsic_rewards[next_idx]
                     else:
                         #self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])#+np.sum(np.array(self.vec_obs_collection)[-1,1:-2])
                         if (len(np.array(self.vec_obs_collection)[int(str(agent_id).split("-")[0])])>1):
@@ -237,11 +243,15 @@ class PPOTrainer(Trainer):
                                 print("Key Collected by agent "+str(agent_id).split("-")[0])
                                 self.keys_collected[int(str(agent_id).split("-")[0])] = self.keys_collected[int(str(agent_id).split("-")[0])] + 1
                                 print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
-                                self.training_buffer[agent_id]['rewards'].append(10)
-                            else:
-                                self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
-                        else:
-                            self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])
+                                reward = reward + 1 #Extra key reward
+                        reward = reward +next_info.rewards[next_idx]
+                        if self.augment_r:
+                            keyP = self.getKeyP(next_info.visual_observations[i][next_idx])
+                            if np.sum(keyP) > 20:
+                                reward = reward + 0.01
+                    self.overall_reward.append(reward)
+                    self.training_buffer[agent_id]['rewards'].append(reward)
+
                     self.training_buffer[agent_id]['action_probs'].append(a_dist[idx])
                     self.training_buffer[agent_id]['value_estimates'].append(value[idx][0])
                     if agent_id not in self.cumulative_rewards:
@@ -332,6 +342,8 @@ class PPOTrainer(Trainer):
                         self.stats['Policy/Curiosity Reward'].append(
                             self.intrinsic_rewards.get(agent_id, 0))
                         self.intrinsic_rewards[agent_id] = 0
+                    self.stats['Policy/Overall Reward'].append(np.sum(self.overall_reward))
+                    self.overall_reward = []
 
         self.trainer_metrics.end_experience_collection_timer()
 
