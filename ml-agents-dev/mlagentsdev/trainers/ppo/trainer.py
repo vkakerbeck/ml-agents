@@ -230,25 +230,24 @@ class PPOTrainer(Trainer):
                     self.training_buffer[agent_id]['prev_action'].append(stored_info.previous_vector_actions[idx])
                     self.training_buffer[agent_id]['masks'].append(1.0)
                     reward = 0
+
                     if self.use_curiosity:
-                        #self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx] +
-                            #                                             intrinsic_rewards[next_idx])#XXX
                         reward = reward + next_info.rewards[next_idx] + intrinsic_rewards[next_idx]
                     else:
-                        #self.training_buffer[agent_id]['rewards'].append(next_info.rewards[next_idx])#+np.sum(np.array(self.vec_obs_collection)[-1,1:-2])
-                        if (len(np.array(self.vec_obs_collection)[int(str(agent_id).split("-")[0])])>1):
-                            #if (next_info.rewards[next_idx]>0 or (np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-2,1:-2])==0)):
-                            #    print("agent "+str(agent_id)[0]+"  "+str(next_info.rewards[next_idx])+"  "+str(np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-1,1:-2]))+ "  "+str(np.sum(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[-2,1:-2])))
-                            if (np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-2,1:-2])==0):
-                                print("Key Collected by agent "+str(agent_id).split("-")[0])
-                                self.keys_collected[int(str(agent_id).split("-")[0])] = self.keys_collected[int(str(agent_id).split("-")[0])] + 1
-                                print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
-                                reward = reward + 1 #Extra key reward
                         reward = reward +next_info.rewards[next_idx]
-                        if self.augment_r:
-                            keyP = self.getKeyP(next_info.visual_observations[i][next_idx])
-                            if np.sum(keyP) > 20:
-                                reward = reward + 0.01
+
+                    if (len(np.array(self.vec_obs_collection)[int(str(agent_id).split("-")[0])])>1):
+                        if (np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-2,1:-2])==0):
+                            print("Key Collected by agent "+str(agent_id).split("-")[0])
+                            self.keys_collected[int(str(agent_id).split("-")[0])] = self.keys_collected[int(str(agent_id).split("-")[0])] + 1
+                            print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
+                            reward = reward + 1 #Extra key reward
+
+                    if self.augment_r:
+                        keyP = self.getKeyP(next_info.visual_observations[i][next_idx])
+                        if np.sum(keyP) > 20:
+                            reward = reward + 0.01
+
                     self.overall_reward.append(reward)
                     self.training_buffer[agent_id]['rewards'].append(reward)
 
