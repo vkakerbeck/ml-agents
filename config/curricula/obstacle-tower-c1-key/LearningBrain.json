@@ -1,20 +1,20 @@
 {
     "measure" : "reward",
-    "thresholds" : [1.0, 1.5, 2.0, 2.5, 5.0, 10.0],
+    "thresholds" : [0.2,0.5],
     "min_lesson_length": 10,
     "signal_smoothing" : true,
     "parameters" :
     {
-        "tower-seed": [1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0],
-        "starting-floor": [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
-        "dense-reward": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-        "lighting-type": [0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0],
-        "visual-theme": [0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
-        "agent-perspective": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-        "allowed-rooms": [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0],
-        "allowed-modules": [1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0],
-        "allowed-floors": [1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0],
-        "total-floors": [10.0, 10.0, 10.0, 10.0, 10.0, 20.0, 100.0],
-        "default-theme": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        "tower-seed": [1.0, -1.0, -1.0],
+        "starting-floor": [8.0, 8.0, 8.0],
+        "dense-reward": [1.0, 1.0, 1.0],
+        "lighting-type": [0.0, 1.0, 1.0],
+        "visual-theme": [0.0, 1.0, 1.0],
+        "agent-perspective": [1.0, 1.0, 1.0],
+        "allowed-rooms": [2.0, 2.0, 2.0],
+        "allowed-modules": [2.0, 2.0, 2.0],
+        "allowed-floors": [2.0, 2.0, 2.0],
+        "total-floors": [10.0, 10.0, 20.0],
+        "default-theme": [0.0, 0.0, 0.0]
     }
 }

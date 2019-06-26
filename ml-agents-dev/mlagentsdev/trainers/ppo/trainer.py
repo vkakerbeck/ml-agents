@@ -201,7 +201,7 @@ class PPOTrainer(Trainer):
                     for i, _ in enumerate(stored_info.visual_observations):
                         self.training_buffer[agent_id]['visual_obs%d' % i].append(
                             stored_info.visual_observations[i][idx])
-                        if (self.save_obs and int(str(agent_id).split("-")[0])==1):
+                        if (self.save_obs):
                             self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
@@ -327,11 +327,11 @@ class PPOTrainer(Trainer):
                         pass
                         #print(np.array(self.vec_obs_collection))
 
-                    if (self.save_obs and int(str(agent_id).split("-")[0])==1):#XX
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 and self.keys_collected[1]>1):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                    if (self.save_obs):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 and self.keys_collected[int(str(agent_id).split("-")[0])]>4):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             print("saved observations")
-                            np.save("./observations/visobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
-                            np.save("./observations/vecobskeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
+                            np.save("./observations/visobsMkeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
+                            np.save("./observations/vecobsMkeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
 
                         self.vis_obs_collection = []
                     self.vec_obs_collection[int(str(agent_id).split("-")[0])] = []
