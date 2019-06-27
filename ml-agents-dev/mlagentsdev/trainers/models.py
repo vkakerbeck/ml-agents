@@ -174,11 +174,12 @@ class LearningModel(object):
         output = tf.concat([tf.multinomial(tf.log(normalized_probs[k]), 1) for k in range(len(action_size))], axis=1)
         return output, tf.concat([tf.log(normalized_probs[k] + 1.0e-10) for k in range(len(action_size))], axis=1)
 
-    def create_observation_streams(self, num_streams, h_size, num_layers):
+    def create_observation_streams(self, num_streams, h_size, h_size_vec, num_layers):
         """
         Creates encoding stream for observations.
         :param num_streams: Number of streams to create.
         :param h_size: Size of hidden linear layers in stream.
+        :param h_size_vec: Size of the hidden layer of the vector observation.
         :param num_layers: Number of hidden linear layers in stream.
         :return: List of encoded streams.
         """
@@ -208,10 +209,10 @@ class LearningModel(object):
                 hidden_visual = tf.concat(visual_encoders, axis=1)
             if brain.vector_observation_space_size > 0:
                 hidden_state = self.create_vector_observation_encoder(vector_observation_input,
-                                                                      h_size, activation_fn,
+                                                                      h_size_vec, activation_fn,
                                                                       num_layers,
                                                                       "main_graph_{}".format(i),
-                                                                      False)
+                                                                      False)#XX
             if hidden_state is not None and hidden_visual is not None:
                 final_hidden = tf.concat([hidden_visual, hidden_state], axis=1)
             elif hidden_state is None and hidden_visual is not None:
@@ -248,13 +249,14 @@ class LearningModel(object):
         recurrent_output = tf.reshape(recurrent_output, shape=[-1, _half_point])
         return recurrent_output, tf.concat([lstm_state_out.c, lstm_state_out.h], axis=1)
 
-    def create_cc_actor_critic(self, h_size, num_layers):
+    def create_cc_actor_critic(self, h_size, h_size_vec, num_layers):
         """
         Creates Continuous control actor-critic model.
         :param h_size: Size of hidden linear layers.
+        :param h_size_vec: Size of the hidden layer of the vector observation.
         :param num_layers: Number of hidden linear layers.
         """
-        hidden_streams = self.create_observation_streams(2, h_size, num_layers)
+        hidden_streams = self.create_observation_streams(2, h_size, h_size_vec, num_layers)
 
         if self.use_recurrent:
             self.memory_in = tf.placeholder(shape=[None, self.m_size], dtype=tf.float32,
@@ -307,13 +309,14 @@ class LearningModel(object):
         self.old_log_probs = tf.reduce_sum((tf.identity(self.all_old_log_probs)), axis=1,
                                            keepdims=True)
 
-    def create_dc_actor_critic(self, h_size, num_layers):
+    def create_dc_actor_critic(self, h_size, h_size_vec, num_layers):
         """
         Creates Discrete control actor-critic model.
         :param h_size: Size of hidden linear layers.
+        :param h_size_vec: Size of the hidden layer of the vector observation.
         :param num_layers: Number of hidden linear layers.
         """
-        hidden_streams = self.create_observation_streams(1, h_size, num_layers)
+        hidden_streams = self.create_observation_streams(1, h_size, h_size_vec, num_layers)
         hidden = hidden_streams[0]
 
         if self.use_recurrent:

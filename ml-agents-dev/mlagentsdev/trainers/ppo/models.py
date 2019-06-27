@@ -8,7 +8,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 
 
 class PPOModel(LearningModel):
-    def __init__(self, brain, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_step=5e6,
+    def __init__(self, brain, lr=1e-4, h_size=128, h_size_vec=128, epsilon=0.2, beta=1e-3, max_step=5e6,
                  normalize=False, use_recurrent=False, num_layers=2, m_size=None, use_curiosity=False,
                  curiosity_strength=0.01, curiosity_enc_size=128, forward_model_weight=0.2, seed=0):
         """
@@ -16,7 +16,8 @@ class PPOModel(LearningModel):
         appropriate PPO agent model for the environment.
         :param brain: BrainInfo used to generate specific network graph.
         :param lr: Learning rate.
-        :param h_size: Size of hidden layers
+        :param h_size: Size of hidden layers of the visual observations.
+        :param h_size_vec: Size of the hidden layer of the vector observation.
         :param epsilon: Value for policy-divergence threshold.
         :param beta: Strength of entropy regularization.
         :return: a sub-class of PPOAgent tailored to the environment.
@@ -33,10 +34,10 @@ class PPOModel(LearningModel):
             num_layers = 1
         self.last_reward, self.new_reward, self.update_reward = self.create_reward_encoder()
         if brain.vector_action_space_type == "continuous":
-            self.create_cc_actor_critic(h_size, num_layers)
+            self.create_cc_actor_critic(h_size, h_size_vec, num_layers)
             self.entropy = tf.ones_like(tf.reshape(self.value, [-1])) * self.entropy
         else:
-            self.create_dc_actor_critic(h_size, num_layers)
+            self.create_dc_actor_critic(h_size, h_size_vec, num_layers)
         if self.use_curiosity:
             self.curiosity_enc_size = curiosity_enc_size
             self.curiosity_strength = curiosity_strength

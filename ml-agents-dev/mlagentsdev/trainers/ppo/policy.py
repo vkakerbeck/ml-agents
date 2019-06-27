@@ -25,6 +25,7 @@ class PPOPolicy(Policy):
             self.model = PPOModel(brain,
                                   lr=float(trainer_params['learning_rate']),
                                   h_size=int(trainer_params['hidden_units']),
+                                  h_size_vec=int(trainer_params['hidden_units_vec']),
                                   epsilon=float(trainer_params['epsilon']),
                                   beta=float(trainer_params['beta']),
                                   max_step=float(trainer_params['max_steps']),

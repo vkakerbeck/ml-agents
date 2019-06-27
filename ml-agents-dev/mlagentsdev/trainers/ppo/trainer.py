@@ -34,11 +34,11 @@ class PPOTrainer(Trainer):
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
-        self.param_keys = ['batch_size', 'beta', 'buffer_size', 'epsilon', 'gamma', 'hidden_units', 'lambd',
+        self.param_keys = ['batch_size', 'beta', 'buffer_size', 'epsilon', 'gamma', 'hidden_units', 'hidden_units_vec', 'lambd',
                            'learning_rate', 'max_steps', 'normalize', 'num_epoch', 'num_layers',
                            'time_horizon', 'sequence_length', 'summary_freq', 'use_recurrent',
                            'summary_path', 'memory_size', 'use_curiosity', 'curiosity_strength',
-                           'curiosity_enc_size', 'model_path']
+                           'curiosity_enc_size', 'model_path', 'augment_r', 'forward_model_weight']
 
         self.check_param_keys()
         self.use_curiosity = bool(trainer_parameters['use_curiosity'])

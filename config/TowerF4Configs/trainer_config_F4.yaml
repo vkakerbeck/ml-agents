@@ -6,6 +6,7 @@ default:
     epsilon: 0.2
     gamma: 0.999
     hidden_units: 256
+    hidden_units_vec: 16
     lambd: 0.9
     learning_rate: 1.0e-4
     max_steps: 5.0e8
