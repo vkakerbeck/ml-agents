@@ -10,7 +10,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 class PPOModel(LearningModel):
     def __init__(self, brain, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_step=5e6,
                  normalize=False, use_recurrent=False, num_layers=2, m_size=None, use_curiosity=False,
-                 curiosity_strength=0.01, curiosity_enc_size=128, seed=0):
+                 curiosity_strength=0.01, curiosity_enc_size=128, forward_model_weight=0.2, seed=0):
         """
         Takes a Unity environment and model-specific hyper-parameters and returns the
         appropriate PPO agent model for the environment.
@@ -25,6 +25,7 @@ class PPOModel(LearningModel):
         :param use_recurrent: Whether to use an LSTM layer in the network.
         :param num_layers Number of hidden layers between encoded input and policy & value layers
         :param m_size: Size of brain memory.
+        :param forward_model_weight: weighting for forward_loss to inverse_loss
         """
         LearningModel.__init__(self, m_size, normalize, use_recurrent, brain, seed)
         self.use_curiosity = use_curiosity
@@ -39,6 +40,7 @@ class PPOModel(LearningModel):
         if self.use_curiosity:
             self.curiosity_enc_size = curiosity_enc_size
             self.curiosity_strength = curiosity_strength
+            self.forward_model_weight = forward_model_weight
             encoded_state, encoded_next_state = self.create_curiosity_encoders()
             self.create_inverse_model(encoded_state, encoded_next_state)
             self.create_forward_model(encoded_state, encoded_next_state)
@@ -194,5 +196,5 @@ class PPOModel(LearningModel):
             tf.dynamic_partition(entropy, self.mask, 2)[1])
 
         if self.use_curiosity:
-            self.loss += 10 * (0.2 * self.forward_loss + 0.8 * self.inverse_loss)
+            self.loss += 10 * (self.forward_model_weight * self.forward_loss + (1 - self.forward_model_weight) * self.inverse_loss)
         self.update_batch = optimizer.minimize(self.loss)

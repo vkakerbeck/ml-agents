@@ -35,7 +35,8 @@ class PPOPolicy(Policy):
                                   use_curiosity=bool(trainer_params['use_curiosity']),
                                   curiosity_strength=float(trainer_params['curiosity_strength']),
                                   curiosity_enc_size=float(trainer_params['curiosity_enc_size']),
-                                  seed=seed)
+                                  seed=seed,
+                                  forward_model_weight=trainer_params['forward_model_weight'])
 
         if load:
             self._load_graph()
