@@ -21,7 +21,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs, augment_r):
+                 load, seed, run_id, save_obs, num_envs):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -31,7 +31,6 @@ class PPOTrainer(Trainer):
         :param run_id: The The identifier of the current run
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
-        :param augment_r: Whether to augment the reward.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -62,7 +61,6 @@ class PPOTrainer(Trainer):
         self._reward_buffer = deque(maxlen=reward_buff_cap)
         self.episode_steps = {}
         self.save_obs = save_obs
-        self.augment_r = augment_r
         if self.save_obs:
             self.vis_obs_collection = []
         self.vec_obs_collection = [[] for y in range(num_envs)]#XX
@@ -243,7 +241,7 @@ class PPOTrainer(Trainer):
                             print(str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,1:-2]))+" overall: "+str(self.keys_collected))
                             reward = reward + 1 #Extra key reward
 
-                    if self.augment_r:
+                    if self.trainer_parameters['augment_r']:
                         keyP = self.getKeyP(next_info.visual_observations[i][next_idx])
                         if np.sum(keyP) > 20:
                             reward = reward + 0.01

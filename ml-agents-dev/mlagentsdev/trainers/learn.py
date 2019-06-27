@@ -49,7 +49,6 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
     save_obs = run_options['--save-obs']
-    augment_r = run_options['--augment-r']
     trainer_config_path = run_options['<trainer-config-path>']
     reset_config_path = (run_options['--reset-config'] if run_options['--reset-config'] != None else None)
 
@@ -105,7 +104,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
-                           run_seed, fast_simulation,save_obs,num_envs,augment_r)
+                           run_seed, fast_simulation,save_obs,num_envs)
 
     # Signal that environment has been launched.
     process_queue.put(True)

@@ -37,8 +37,7 @@ class TrainerController(object):
                  training_seed: int,
                  fast_simulation: bool,
                  save_obs: bool,
-                 num_envs: int,
-                 augment_r: bool):
+                 num_envs: int):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -53,7 +52,6 @@ class TrainerController(object):
         :param training_seed: Seed to use for Numpy and Tensorflow random number generation.
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
-        :param augment_r: Whether to augment the reward.
         """
 
         self.model_path = model_path
@@ -76,7 +74,6 @@ class TrainerController(object):
         self.fast_simulation = fast_simulation
         self.save_obs = save_obs
         self.num_envs = num_envs
-        self.augment_r = augment_r
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
 
@@ -169,7 +166,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs,self.augment_r)
+                    self.run_id,self.save_obs,self.num_envs)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '

@@ -20,3 +20,4 @@ default:
     use_curiosity: false
     curiosity_strength: 0.1
     curiosity_enc_size: 128
+    augment_r: false
