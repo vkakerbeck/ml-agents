@@ -271,7 +271,6 @@ class UnityEnvironment(BaseUnityEnvironment):
             outputs = self.communicator.exchange(
                 self._generate_reset_input(train_mode, config, custom_reset_parameters)
             )
-            logger.info(str(self))
             if outputs is None:
                 raise KeyboardInterrupt
             rl_output = outputs.rl_output

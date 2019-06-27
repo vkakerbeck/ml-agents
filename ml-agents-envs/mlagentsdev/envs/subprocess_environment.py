@@ -73,7 +73,6 @@ def worker(parent_conn: Connection, pickled_env_factory: str, worker_id: int):
             elif cmd.name == 'reset_parameters':
                 _send_response('reset_parameters', env.reset_parameters)
             elif cmd.name == 'reset':
-                print('here')
                 all_brain_info = env.reset(cmd.payload[0], cmd.payload[1])
                 _send_response('reset', all_brain_info)
             elif cmd.name == 'global_done':
@@ -96,7 +95,6 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
         for worker_id in range(n_env):
             self.envs.append(self.create_worker(worker_id, env_factory))
             time.sleep(2)
-            print(worker_id)
 
     @staticmethod
     def create_worker(
