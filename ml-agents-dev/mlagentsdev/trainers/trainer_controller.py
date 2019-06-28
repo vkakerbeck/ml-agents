@@ -240,7 +240,6 @@ class TrainerController(object):
                 new_info = self.take_step(env, curr_info)
                 info = new_info['LearningBrain']
                 if info.local_done[0]:#XX Make possible to record all agents
-                    print(info.local_done)
                     stats = self.trainers['LearningBrain'].getStats()
                     """info_str = ('Agent ' + str(stats[0]) + ': Keys: ' + str(stats[1]) + ' Floor: ' + str(stats[2]) +
                         ' Episode Length: ' + str(stats[3]) + ' Reward: ' + str(stats[4]) + ' Tower Seed: ' +
