@@ -7,6 +7,7 @@ import logging
 import shutil
 import sys
 from typing import *
+import random
 
 import numpy as np
 import tensorflow as tf
@@ -74,6 +75,7 @@ class TrainerController(object):
         self.fast_simulation = fast_simulation
         self.save_obs = save_obs
         self.num_envs = num_envs
+        self.seed_logger = logging.getLogger('seed_logger')
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
 
@@ -186,17 +188,28 @@ class TrainerController(object):
                                             'permissions are set correctly.'
                                             .format(model_path))
 
-    def _reset_env(self, env: BaseUnityEnvironment):
+    def _reset_env(self, env: BaseUnityEnvironment, config=None):
         """Resets the environment.
 
         Returns:
             A Data structure corresponding to the initial reset state of the
             environment.
         """
+        #XX Adjust to be more uniform
         if self.meta_curriculum is not None:
             return env.reset(train_mode=self.fast_simulation, config=self.meta_curriculum.get_config())
         else:
-            return env.reset(train_mode=self.fast_simulation)
+            if config==None:
+                return env.reset(train_mode=self.fast_simulation)
+            else:
+                return env.reset_one(train_mode=self.fast_simulation, config = config)
+
+    def set_up_logger(self):
+        f_handler = logging.FileHandler('./seed_stats/'+str(self.run_id) + '_' + 'SeedStats.csv')
+        f_handler.setLevel(logging.INFO)
+        f_format = logging.Formatter('%(relativeCreated)6d,%(message)s')
+        f_handler.setFormatter(f_format)
+        self.seed_logger.addHandler(f_handler)
 
     def start_learning(self, env: BaseUnityEnvironment, trainer_config):
         # TODO: Should be able to start learning at different lesson numbers
@@ -218,10 +231,27 @@ class TrainerController(object):
                                                trainer.parameters)
         try:
             curr_info = self._reset_env(env)
+            self.set_up_logger()
+            header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'
+            self.seed_logger.info(header)
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \
                   or not self.train_model:
                 new_info = self.take_step(env, curr_info)
+                info = new_info['LearningBrain']
+                if info.local_done[0]:#XX Make possible to record all agents
+                    print(info.local_done)
+                    stats = self.trainers['LearningBrain'].getStats()
+                    """info_str = ('Agent ' + str(stats[0]) + ': Keys: ' + str(stats[1]) + ' Floor: ' + str(stats[2]) +
+                        ' Episode Length: ' + str(stats[3]) + ' Reward: ' + str(stats[4]) + ' Tower Seed: ' +
+                        str(env.reset_parameters['tower-seed']))
+                    print(info_str)"""
+                    info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
+                        ',' + str(stats[2]) + ',' + str(stats[3]) + ',' + str(stats[1]))
+                    self.seed_logger.info(info_log)
+                    seed = random.randint(0, 100)
+                    curr_info = self._reset_env(env, config = {'tower-seed': seed})
+
                 self.global_step += 1
                 if self.global_step % self.save_freq == 0 and self.global_step != 0 \
                         and self.train_model:

@@ -212,7 +212,7 @@ class LearningModel(object):
                                                                       h_size_vec, activation_fn,
                                                                       num_layers,
                                                                       "main_graph_{}".format(i),
-                                                                      False)#XX
+                                                                      False)
             if hidden_state is not None and hidden_visual is not None:
                 final_hidden = tf.concat([hidden_visual, hidden_state], axis=1)
             elif hidden_state is None and hidden_visual is not None:

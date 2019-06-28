@@ -97,6 +97,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
         reset_conf
     )
     env = SubprocessUnityEnvironment(env_factory, num_envs)
+    print("tower seed: " + str(env.reset_parameters['tower-seed']))
     maybe_meta_curriculum = try_create_meta_curriculum(curriculum_folder, env)
 
     # Create controller and begin training.

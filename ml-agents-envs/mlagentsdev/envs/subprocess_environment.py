@@ -165,6 +165,13 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
 
         return self._merge_step_info(reset_results)
 
+    def reset_one(self, config=None, train_mode=True, Env_N=0) -> AllBrainInfo:
+        self._broadcast_one_message('reset', (config, train_mode), Env_N)
+        reset_results = [self.envs[Env_N].recv()]
+        #self._get_agent_counts(map(lambda r: r.payload, reset_results))
+
+        return self._merge_step_info(reset_results)
+
     @property
     def global_done(self):
         self._broadcast_message('global_done')
@@ -213,3 +220,6 @@ class SubprocessUnityEnvironment(BaseUnityEnvironment):
             env.send(name, payload)
             if (name=='reset'):
                 time.sleep(0.5)
+
+    def _broadcast_one_message(self, name: str, payload = None, Env_N=0):
+        self.envs[Env_N].send(name, payload)

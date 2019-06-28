@@ -63,9 +63,10 @@ class PPOTrainer(Trainer):
         self.save_obs = save_obs
         if self.save_obs:
             self.vis_obs_collection = []
-        self.vec_obs_collection = [[] for y in range(num_envs)]#XX
+        self.vec_obs_collection = [[] for y in range(num_envs)]
         self.keys_collected = np.zeros((num_envs))
         self.overall_reward = []
+        self.Pstats = []
 
 
     def __str__(self):
@@ -160,8 +161,13 @@ class PPOTrainer(Trainer):
                               memories, rewards, agents, local_dones, prev_vector_actions,
                               prev_text_actions, max_reacheds, action_masks)
         return curr_info
+
     def getKeyP(self, img):
         return ((img[:,:,0]>0.60)&(img[:,:,1]>0.4)&(img[:,:,2]<0.3))
+
+    def getStats(self):
+        return(self.Pstats)
+
     def add_experiences(self, curr_all_info: AllBrainInfo, next_all_info: AllBrainInfo, take_action_outputs):
         """
         Adds experiences to each agent's experience history.
@@ -323,7 +329,10 @@ class PPOTrainer(Trainer):
                     except:
                         pass
                         #print(np.array(self.vec_obs_collection))
-
+                    #Stats = [agent, keys collected, floor reached, episode length, reward]
+                    self.Pstats = [str(agent_id).split("-")[0], self.keys_collected[int(str(agent_id).split("-")[0])],
+                        str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
+                        str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
                         if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 and self.keys_collected[int(str(agent_id).split("-")[0])]>4):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             print("saved observations")
@@ -349,6 +358,7 @@ class PPOTrainer(Trainer):
         A signal that the Episode has ended. The buffer must be reset.
         Get only called when the academy resets.
         """
+        print("end episode")
         self.training_buffer.reset_local_buffers()
         for agent_id in self.cumulative_rewards:
             self.cumulative_rewards[agent_id] = 0
