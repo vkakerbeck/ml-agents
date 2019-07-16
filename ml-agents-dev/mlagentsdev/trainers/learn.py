@@ -49,6 +49,8 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
     save_obs = run_options['--save-obs']
+    seed_curriculum = run_options['--seed-curriculum']
+    use_depth = run_options['--use-depth']
     trainer_config_path = run_options['<trainer-config-path>']
     reset_config_path = (run_options['--reset-config'] if run_options['--reset-config'] != None else None)
 
@@ -105,7 +107,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
-                           run_seed, fast_simulation,save_obs,num_envs)
+                           run_seed, fast_simulation,save_obs,num_envs,seed_curriculum, use_depth)
 
     # Signal that environment has been launched.
     process_queue.put(True)
@@ -258,9 +260,10 @@ def main():
       --docker-target-name=<dt>  Docker volume to store training-specific files [default: None].
       --no-graphics              Whether to run the environment in no-graphics mode [default: False].
       --save-obs                 Whether to save the observations of good runs [default:False].
-      --augment-r                Whether to augment the reward [default:False].
+      --seed-curriculum          Whether to use curriculum learning by showing easy seeds first [default: False].
       --debug                    Whether to run ML-Agents in debug mode with detailed logging [default: False].
       --reset-config=<directory> Path to config file for environment reset [default: False].
+      --use-depth                Augment visual input with depth information [default: False].
     '''
 
     options = docopt(_USAGE)

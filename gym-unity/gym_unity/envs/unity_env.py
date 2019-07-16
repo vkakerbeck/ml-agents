@@ -194,7 +194,7 @@ class UnityEnv(gym.Env):
         return list(default_observation), info.rewards, info.local_done, {
             "text_observation": info.text_observations,
             "brain_info": info}
-    
+
     def _preprocess_multi(self, multiple_visual_obs):
         if self.uint8_visual:
             return [(255.0*_visual_obs).astype(np.uint8) for _visual_obs in multiple_visual_obs]

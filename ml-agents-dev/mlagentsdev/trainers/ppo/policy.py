@@ -8,7 +8,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 
 
 class PPOPolicy(Policy):
-    def __init__(self, seed, brain, trainer_params, is_training, load):
+    def __init__(self, seed, brain, trainer_params, is_training, load, use_depth):
         """
         Policy for Proximal Policy Optimization Networks.
         :param seed: Random seed.
@@ -16,6 +16,7 @@ class PPOPolicy(Policy):
         :param trainer_params: Defined training parameters.
         :param is_training: Whether the model should be trained.
         :param load: Whether a pre-trained model will be loaded or a new one created.
+        :param use_depth: Augment visual input with depth information.
         """
         super().__init__(seed, brain, trainer_params)
         self.has_updated = False
@@ -37,7 +38,8 @@ class PPOPolicy(Policy):
                                   curiosity_strength=float(trainer_params['curiosity_strength']),
                                   curiosity_enc_size=float(trainer_params['curiosity_enc_size']),
                                   seed=seed,
-                                  forward_model_weight=trainer_params['forward_model_weight'])
+                                  forward_model_weight=trainer_params['forward_model_weight'],
+                                  use_depth=use_depth)
 
         if load:
             self._load_graph()

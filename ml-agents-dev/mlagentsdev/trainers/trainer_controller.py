@@ -8,6 +8,7 @@ import shutil
 import sys
 from typing import *
 import random
+import pandas as pd
 
 import numpy as np
 import tensorflow as tf
@@ -21,6 +22,7 @@ from mlagentsdev.trainers.ppo.trainer import PPOTrainer
 from mlagentsdev.trainers.bc.offline_trainer import OfflineBCTrainer
 from mlagentsdev.trainers.bc.online_trainer import OnlineBCTrainer
 from mlagentsdev.trainers.meta_curriculum import MetaCurriculum
+#from mlagentsdev.trainers.depth_extractor import Depth_Extractor
 
 
 class TrainerController(object):
@@ -38,7 +40,9 @@ class TrainerController(object):
                  training_seed: int,
                  fast_simulation: bool,
                  save_obs: bool,
-                 num_envs: int):
+                 num_envs: int,
+                 seed_curriculum: int,
+                 use_depth: bool):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -53,6 +57,8 @@ class TrainerController(object):
         :param training_seed: Seed to use for Numpy and Tensorflow random number generation.
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
+        :param seed_curriculum: Whether to use curriculum learning by showing easy seeds first.
+        :param use_depth: Augment visual information with depth information.
         """
 
         self.model_path = model_path
@@ -76,6 +82,12 @@ class TrainerController(object):
         self.save_obs = save_obs
         self.num_envs = num_envs
         self.seed_logger = logging.getLogger('seed_logger')
+        self.seed_curriculum = seed_curriculum
+        self.use_depth = use_depth
+        self.depth_extractor = []
+        if self.seed_curriculum:
+            self.seed_difficulties = []
+            self.seed_lesson = 1
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
 
@@ -168,7 +180,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs)
+                    self.run_id,self.save_obs,self.num_envs, self.use_depth)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '
@@ -211,6 +223,24 @@ class TrainerController(object):
         f_handler.setFormatter(f_format)
         self.seed_logger.addHandler(f_handler)
 
+    def getSeedCurriculum(self):
+        seed_stats = pd.read_csv('./seed_stats/TowerF4_BaselineCopy-0_SeedStatsF.csv')#XX make universal
+        seed_stats = seed_stats[1:]
+        seed_stats['Tower Seed'] = seed_stats['Tower Seed'].astype(int)
+        seed_stats_g = seed_stats.groupby(['Tower Seed']).mean()
+        seed_stats_gs = seed_stats_g.sort_values('Reward')
+        seedlist = seed_stats_gs.index
+        return seedlist
+
+    def getCurriculumSeed(self):
+        if self.seed_lesson == 0:
+            seed = self.seed_difficulties[random.randint(61, 100)]#easiest seeds
+        elif self.seed_lesson == 1:
+            seed = self.seed_difficulties[random.randint(31, 61)]#medium difficulty
+        else:
+            seed = self.seed_difficulties[random.randint(0, 31)]#hardest seeds
+        return seed
+
     def start_learning(self, env: BaseUnityEnvironment, trainer_config):
         # TODO: Should be able to start learning at different lesson numbers
         # for each curriculum.
@@ -231,14 +261,28 @@ class TrainerController(object):
                                                trainer.parameters)
         try:
             curr_info = self._reset_env(env)
+            if self.use_depth:
+                self.depth_extractor = Depth_Extractor('C:/Users/vivia/Desktop/ml-agents-dev/depth_models/')#XX make universal
+                for e in range(self.num_envs):
+                    cur_vis = curr_info['LearningBrain'].visual_observations[0][e]
+                    d = self.depth_extractor.compute_depths(cur_vis,'crop')
+                    curr_info['LearningBrain'].visual_observations[0][e] = np.concatenate((cur_vis,d),axis=2)
+                    print(curr_info['LearningBrain'].visual_observations[0][e].shape)
+
             self.set_up_logger()
-            header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'
+            self.seed_difficulties = self.getSeedCurriculum()
+            header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'#XX don't add header if file already exists
             self.seed_logger.info(header)
+            startS = 0
+            print(self.seed_lesson)
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \
-                  or not self.train_model:
+                  or not self.train_model:#XX first seed not random
                 new_info = self.take_step(env, curr_info)
                 info = new_info['LearningBrain']
+                if (startS == 0 and t.get_step>0):
+                    startS = t.get_step
+                    print('startS: ' + str(startS))
                 if info.local_done[0]:#XX Make possible to record all agents
                     stats = self.trainers['LearningBrain'].getStats()
                     """info_str = ('Agent ' + str(stats[0]) + ': Keys: ' + str(stats[1]) + ' Floor: ' + str(stats[2]) +
@@ -248,7 +292,14 @@ class TrainerController(object):
                     info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
                         ',' + str(stats[2]) + ',' + str(stats[3]) + ',' + str(stats[1]))
                     self.seed_logger.info(info_log)
-                    seed = random.randint(0, 100)
+                    if (t.get_step - startS > 5000000) and self.seed_curriculum:#XX add incrementation dependent on average reward
+                        self.seed_lesson = self.seed_lesson + 1#XX tensorflow summaries - add seed lesson
+                        startS = t.get_step
+                        print("incrementing seed lesson - now in lesson "+str(self.seed_lesson))
+                    if self.seed_curriculum:
+                        seed = int(self.getCurriculumSeed())
+                    else:
+                        seed = random.randint(0, 100)
                     curr_info = self._reset_env(env, config = {'tower-seed': seed})
 
                 self.global_step += 1
@@ -313,12 +364,20 @@ class TrainerController(object):
             take_action_value[brain_name] = action_info.value
             take_action_outputs[brain_name] = action_info.outputs
         time_start_step = time()
+
         new_info = env.step(
             vector_action=take_action_vector,
             memory=take_action_memories,
             text_action=take_action_text,
             value=take_action_value
         )
+
+        if self.use_depth:
+            for e in range(self.num_envs):
+                vis = new_info['LearningBrain'].visual_observations[0][e]
+                d = self.depth_extractor.compute_depths(vis,'crop')
+                new_info['LearningBrain'].visual_observations[0][e] = np.concatenate((vis,d),axis=2)
+
         delta_time_step = time() - time_start_step
         for brain_name, trainer in self.trainers.items():
             if brain_name in self.trainer_metrics:

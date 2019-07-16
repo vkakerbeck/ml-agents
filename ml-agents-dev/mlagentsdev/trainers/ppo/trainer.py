@@ -21,7 +21,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs):
+                 load, seed, run_id, save_obs, num_envs, use_depth):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -31,6 +31,7 @@ class PPOTrainer(Trainer):
         :param run_id: The The identifier of the current run
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
+        :param use_depth: Augment visual input with depth information.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -44,7 +45,7 @@ class PPOTrainer(Trainer):
         self.use_curiosity = bool(trainer_parameters['use_curiosity'])
         self.step = 0
         self.policy = PPOPolicy(seed, brain, trainer_parameters,
-                                self.is_training, load)
+                                self.is_training, load, use_depth)
 
         stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],'Environment/Keys':[],'Environment/Floor':[],
                  'Policy/Value Estimate': [], 'Policy/Entropy': [], 'Losses/Value Loss': [],

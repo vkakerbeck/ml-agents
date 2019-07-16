@@ -10,7 +10,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 class LearningModel(object):
     _version_number_ = 2
 
-    def __init__(self, m_size, normalize, use_recurrent, brain, seed):
+    def __init__(self, m_size, normalize, use_recurrent, brain, seed, use_depth):
         tf.set_random_seed(seed)
         self.brain = brain
         self.vector_in = None
@@ -30,6 +30,7 @@ class LearningModel(object):
         self.vec_obs_size = brain.vector_observation_space_size * \
                             brain.num_stacked_vector_observations
         self.vis_obs_size = brain.number_visual_observations
+        self.use_depth = use_depth
         tf.Variable(int(brain.vector_action_space_type == 'continuous'),
                     name='is_continuous_control', trainable=False, dtype=tf.int32)
         tf.Variable(self._version_number_, name='version_number', trainable=False, dtype=tf.int32)
@@ -67,9 +68,12 @@ class LearningModel(object):
             c_channels = 1
         else:
             c_channels = 3
-
-        visual_in = tf.placeholder(shape=[None, o_size_h, o_size_w, c_channels], dtype=tf.float32,
-                                   name=name)
+        """if self.use_depth:
+            visual_in = tf.placeholder(shape=[None, o_size_h, o_size_w, c_channels+1], dtype=tf.float32,name=name)
+        else:
+            print("hey")
+            visual_in = tf.placeholder(shape=[None, o_size_h, o_size_w, c_channels], dtype=tf.float32,name=name)"""
+        visual_in = tf.placeholder(shape=[None, o_size_h, o_size_w, c_channels], dtype=tf.float32,name=name)
         return visual_in
 
     def create_vector_input(self, name='vector_observation'):
@@ -188,8 +192,7 @@ class LearningModel(object):
 
         self.visual_in = []
         for i in range(brain.number_visual_observations):
-            visual_input = self.create_visual_input(brain.camera_resolutions[i],
-                                                    name="visual_observation_" + str(i))
+            visual_input = self.create_visual_input(brain.camera_resolutions[i],name="visual_observation_" + str(i))
             self.visual_in.append(visual_input)
         vector_observation_input = self.create_vector_input()
 
