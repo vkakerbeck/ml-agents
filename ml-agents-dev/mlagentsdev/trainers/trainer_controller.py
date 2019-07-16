@@ -268,19 +268,19 @@ class TrainerController(object):
                     d = self.depth_extractor.compute_depths(cur_vis,'crop')
                     curr_info['LearningBrain'].visual_observations[0][e] = np.concatenate((cur_vis,d),axis=2)
                     print(curr_info['LearningBrain'].visual_observations[0][e].shape)
-
-            self.set_up_logger()
-            self.seed_difficulties = self.getSeedCurriculum()
-            header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'#XX don't add header if file already exists
-            self.seed_logger.info(header)
-            startS = 0
-            print(self.seed_lesson)
+            if self.train_model:
+                self.set_up_logger()
+                self.seed_difficulties = self.getSeedCurriculum()
+                header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'#XX don't add header if file already exists
+                self.seed_logger.info(header)
+                startS = 0
+                print(self.seed_lesson)
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \
                   or not self.train_model:#XX first seed not random
                 new_info = self.take_step(env, curr_info)
                 info = new_info['LearningBrain']
-                if (startS == 0 and t.get_step>0):
+                if (self.train_model and (startS == 0 and t.get_step>0)):
                     startS = t.get_step
                     print('startS: ' + str(startS))
                 if info.local_done[0]:#XX Make possible to record all agents
@@ -289,13 +289,14 @@ class TrainerController(object):
                         ' Episode Length: ' + str(stats[3]) + ' Reward: ' + str(stats[4]) + ' Tower Seed: ' +
                         str(env.reset_parameters['tower-seed']))
                     print(info_str)"""
-                    info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
+                    if self.train_model:
+                        info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
                         ',' + str(stats[2]) + ',' + str(stats[3]) + ',' + str(stats[1]))
-                    self.seed_logger.info(info_log)
-                    if (t.get_step - startS > 5000000) and self.seed_curriculum:#XX add incrementation dependent on average reward
-                        self.seed_lesson = self.seed_lesson + 1#XX tensorflow summaries - add seed lesson
-                        startS = t.get_step
-                        print("incrementing seed lesson - now in lesson "+str(self.seed_lesson))
+                        self.seed_logger.info(info_log)
+                        if (t.get_step - startS > 5000000) and self.seed_curriculum:#XX add incrementation dependent on average reward
+                            self.seed_lesson = self.seed_lesson + 1#XX tensorflow summaries - add seed lesson
+                            startS = t.get_step
+                            print("incrementing seed lesson - now in lesson "+str(self.seed_lesson))
                     if self.seed_curriculum:
                         seed = int(self.getCurriculumSeed())
                     else:
