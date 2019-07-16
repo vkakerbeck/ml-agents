@@ -27,13 +27,13 @@ setup(
 
     packages=['mlagentsdev.trainers', 'mlagentsdev.trainers.bc', 'mlagentsdev.trainers.ppo'],  # Required
     zip_safe=False,
-
+#XX changed numpy req from 1.14.5 to 1.16
     install_requires=[
         'mlagents_envs==0.8.1',
         'tensorflow>=1.7,<1.8',
         'Pillow>=4.2.1',
         'matplotlib',
-        'numpy>=1.13.3,<=1.14.5',
+        'numpy>=1.13.3,<=1.16.5',
         'jupyter',
         'pytest>=3.2.2,<4.0.0',
         'docopt',
