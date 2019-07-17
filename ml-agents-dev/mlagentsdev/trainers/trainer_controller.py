@@ -42,7 +42,8 @@ class TrainerController(object):
                  save_obs: bool,
                  num_envs: int,
                  seed_curriculum: int,
-                 use_depth: bool):
+                 use_depth: bool,
+                 save_activations: bool):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -59,6 +60,7 @@ class TrainerController(object):
         :param num_envs: Number of parallel environments.
         :param seed_curriculum: Whether to use curriculum learning by showing easy seeds first.
         :param use_depth: Augment visual information with depth information.
+        :param save_activations: Save network activations.
         """
 
         self.model_path = model_path
@@ -84,6 +86,7 @@ class TrainerController(object):
         self.seed_logger = logging.getLogger('seed_logger')
         self.seed_curriculum = seed_curriculum
         self.use_depth = use_depth
+        self.save_activations = save_activations
         self.depth_extractor = []
         if self.seed_curriculum:
             self.seed_difficulties = []
@@ -180,7 +183,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs, self.use_depth)
+                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '

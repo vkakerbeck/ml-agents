@@ -8,7 +8,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 
 
 class PPOPolicy(Policy):
-    def __init__(self, seed, brain, trainer_params, is_training, load, use_depth):
+    def __init__(self, seed, brain, trainer_params, is_training, load, use_depth, save_activations):
         """
         Policy for Proximal Policy Optimization Networks.
         :param seed: Random seed.
@@ -17,10 +17,12 @@ class PPOPolicy(Policy):
         :param is_training: Whether the model should be trained.
         :param load: Whether a pre-trained model will be loaded or a new one created.
         :param use_depth: Augment visual input with depth information.
+        :param save_activations: Save network activations.
         """
         super().__init__(seed, brain, trainer_params)
         self.has_updated = False
         self.use_curiosity = bool(trainer_params['use_curiosity'])
+        self.save_activations = save_activations
 
         with self.graph.as_default():
             self.model = PPOModel(brain,
@@ -39,7 +41,8 @@ class PPOPolicy(Policy):
                                   curiosity_enc_size=float(trainer_params['curiosity_enc_size']),
                                   seed=seed,
                                   forward_model_weight=trainer_params['forward_model_weight'],
-                                  use_depth=use_depth)
+                                  use_depth=use_depth,
+                                  save_activations=save_activations)
 
         if load:
             self._load_graph()
@@ -57,8 +60,14 @@ class PPOPolicy(Policy):
             self.inference_dict['update_mean'] = self.model.update_mean
             self.inference_dict['update_variance'] = self.model.update_variance
 
-        #if self.use_curiosity:
-            #self.inference_dict['pred_next_state'] = self.model.pred_next_state
+        if self.use_curiosity:
+            self.inference_dict['pred_next_state'] = self.model.pred_next_state
+
+        if self.save_activations:
+            self.inference_dict['encoded_state'] = self.model.encoding
+            self.encodings = []
+            self.values = []
+            self.actions = []
 
         self.update_dict = {'value_loss': self.model.value_loss,
                             'policy_loss': self.model.policy_loss,
@@ -89,6 +98,10 @@ class PPOPolicy(Policy):
             feed_dict[self.model.epsilon] = epsilon
         feed_dict = self._fill_eval_dict(feed_dict, brain_info)
         run_out = self._execute_model(feed_dict, self.inference_dict)
+        if self.save_activations:
+            self.encodings.append(run_out['encoded_state'])
+            self.values.append(run_out['value'])
+            self.actions.append(run_out['action'])
         if self.use_continuous_act:
             run_out['random_normal_epsilon'] = epsilon
         return run_out

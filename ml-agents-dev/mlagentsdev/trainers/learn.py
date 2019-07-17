@@ -51,6 +51,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     save_obs = run_options['--save-obs']
     seed_curriculum = run_options['--seed-curriculum']
     use_depth = run_options['--use-depth']
+    save_activations = run_options['--save-activations']
     trainer_config_path = run_options['<trainer-config-path>']
     reset_config_path = (run_options['--reset-config'] if run_options['--reset-config'] != None else None)
 
@@ -107,7 +108,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
-                           run_seed, fast_simulation,save_obs,num_envs,seed_curriculum, use_depth)
+                           run_seed, fast_simulation,save_obs,num_envs,seed_curriculum, use_depth, save_activations)
 
     # Signal that environment has been launched.
     process_queue.put(True)
@@ -264,6 +265,7 @@ def main():
       --debug                    Whether to run ML-Agents in debug mode with detailed logging [default: False].
       --reset-config=<directory> Path to config file for environment reset [default: False].
       --use-depth                Augment visual input with depth information [default: False].
+      --save-activations         Save network activations [default: False].
     '''
 
     options = docopt(_USAGE)

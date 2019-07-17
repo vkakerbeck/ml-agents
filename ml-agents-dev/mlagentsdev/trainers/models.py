@@ -10,7 +10,7 @@ logger = logging.getLogger("mlagentsdev.trainers")
 class LearningModel(object):
     _version_number_ = 2
 
-    def __init__(self, m_size, normalize, use_recurrent, brain, seed, use_depth):
+    def __init__(self, m_size, normalize, use_recurrent, brain, seed, use_depth=False, save_activations=False):
         tf.set_random_seed(seed)
         self.brain = brain
         self.vector_in = None
@@ -31,6 +31,9 @@ class LearningModel(object):
                             brain.num_stacked_vector_observations
         self.vis_obs_size = brain.number_visual_observations
         self.use_depth = use_depth
+        if save_activations:
+            self.save_activations = save_activations
+            self.encoding = []
         tf.Variable(int(brain.vector_action_space_type == 'continuous'),
                     name='is_continuous_control', trainable=False, dtype=tf.int32)
         tf.Variable(self._version_number_, name='version_number', trainable=False, dtype=tf.int32)
@@ -321,6 +324,8 @@ class LearningModel(object):
         """
         hidden_streams = self.create_observation_streams(1, h_size, h_size_vec, num_layers)
         hidden = hidden_streams[0]
+        if self.save_activations:
+            self.encoding = tf.identity(hidden)
 
         if self.use_recurrent:
             self.prev_action = tf.placeholder(shape=[None, len(self.act_size)], dtype=tf.int32,

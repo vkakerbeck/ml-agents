@@ -3,6 +3,7 @@
 # Contains an implementation of PPO as described (https://arxiv.org/abs/1707.06347).
 
 import logging
+import os
 from collections import deque
 
 import numpy as np
@@ -21,7 +22,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs, use_depth):
+                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -32,6 +33,7 @@ class PPOTrainer(Trainer):
         :param save_obs: Whether to save observations of good runs.
         :param num_envs: Number of parallel environments.
         :param use_depth: Augment visual input with depth information.
+        :param save_activations: Save network activations.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -45,7 +47,7 @@ class PPOTrainer(Trainer):
         self.use_curiosity = bool(trainer_parameters['use_curiosity'])
         self.step = 0
         self.policy = PPOPolicy(seed, brain, trainer_parameters,
-                                self.is_training, load, use_depth)
+                                self.is_training, load, use_depth, save_activations)
 
         stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],'Environment/Keys':[],'Environment/Floor':[],
                  'Policy/Value Estimate': [], 'Policy/Entropy': [], 'Losses/Value Loss': [],
@@ -68,6 +70,7 @@ class PPOTrainer(Trainer):
         self.keys_collected = np.zeros((num_envs))
         self.overall_reward = []
         self.Pstats = []
+        self.save_activations = save_activations
 
 
     def __str__(self):
@@ -335,10 +338,21 @@ class PPOTrainer(Trainer):
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 and self.keys_collected[int(str(agent_id).split("-")[0])]>4):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
-                            print("saved observations")
-                            np.save("./observations/visobsMkeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vis_obs_collection)
-                            np.save("./observations/vecobsMkeydoor"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6]+".npy",self.vec_obs_collection)
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 2 and self.keys_collected[int(str(agent_id).split("-")[0])]>2):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                            folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
+                            print("saving observations in "+folder_name)
+                            os.mkdir(folder_name)
+                            np.save(folder_name+"/visobs.npy",self.vis_obs_collection)
+                            np.save(folder_name+"/vecobs.npy",self.vec_obs_collection)
+                            if self.save_activations:
+                                print("save activations")
+                                np.save(folder_name+"/encodings.npy",self.policy.encodings)
+                                np.save(folder_name+"/values.npy",self.policy.values)
+                                np.save(folder_name+"/actions.npy",self.policy.actions)
+                                np.save(folder_name+"/rewards.npy",self.overall_reward)
+                                self.policy.encodings = []
+                                self.policy.values = []
+                                self.policy.actions = []
 
                         self.vis_obs_collection = []
                     self.vec_obs_collection[int(str(agent_id).split("-")[0])] = []
