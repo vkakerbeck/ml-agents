@@ -43,7 +43,8 @@ class TrainerController(object):
                  num_envs: int,
                  seed_curriculum: int,
                  use_depth: bool,
-                 save_activations: bool):
+                 save_activations: bool,
+                 no_external_rewards: bool):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -61,6 +62,7 @@ class TrainerController(object):
         :param seed_curriculum: Whether to use curriculum learning by showing easy seeds first.
         :param use_depth: Augment visual information with depth information.
         :param save_activations: Save network activations.
+        :param no_external_rewards: If external rewards from the environment are used for training.
         """
 
         self.model_path = model_path
@@ -88,6 +90,7 @@ class TrainerController(object):
         self.use_depth = use_depth
         self.save_activations = save_activations
         self.depth_extractor = []
+        self.no_external_rewards = no_external_rewards
         if self.seed_curriculum:
             self.seed_difficulties = []
             self.seed_lesson = 1
@@ -183,7 +186,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations)
+                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations, self.no_external_rewards)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '
@@ -277,7 +280,6 @@ class TrainerController(object):
                 header = 'Agent,Tower Seed,Reward,Floor,Episode Length,Keys'#XX don't add header if file already exists
                 self.seed_logger.info(header)
                 startS = 0
-                print(self.seed_lesson)
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \
                   or not self.train_model:#XX first seed not random

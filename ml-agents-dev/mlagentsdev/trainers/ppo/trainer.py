@@ -22,7 +22,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations):
+                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations, no_external_rewards):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -34,6 +34,7 @@ class PPOTrainer(Trainer):
         :param num_envs: Number of parallel environments.
         :param use_depth: Augment visual input with depth information.
         :param save_activations: Save network activations.
+        :param no_external_rewards: If external rewards from the environment are used for training
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -71,6 +72,7 @@ class PPOTrainer(Trainer):
         self.overall_reward = []
         self.Pstats = []
         self.save_activations = save_activations
+        self.no_external_rewards = no_external_rewards
 
 
     def __str__(self):
@@ -240,7 +242,11 @@ class PPOTrainer(Trainer):
                     reward = 0
 
                     if self.use_curiosity:
-                        reward = reward + next_info.rewards[next_idx] + intrinsic_rewards[next_idx]
+                        if self.no_external_rewards:
+                            reward = reward + intrinsic_rewards[next_idx]
+                        else:
+                            reward = reward + next_info.rewards[next_idx] + intrinsic_rewards[next_idx]
+
                     else:
                         reward = reward +next_info.rewards[next_idx]
 

@@ -60,8 +60,8 @@ class PPOPolicy(Policy):
             self.inference_dict['update_mean'] = self.model.update_mean
             self.inference_dict['update_variance'] = self.model.update_variance
 
-        if self.use_curiosity:
-            self.inference_dict['pred_next_state'] = self.model.pred_next_state
+        #if self.use_curiosity:
+        #    self.inference_dict['pred_next_state'] = self.model.pred_next_state
 
         if self.save_activations:
             self.inference_dict['encoded_state'] = self.model.encoding
