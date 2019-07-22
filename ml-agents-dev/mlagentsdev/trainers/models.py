@@ -31,8 +31,8 @@ class LearningModel(object):
                             brain.num_stacked_vector_observations
         self.vis_obs_size = brain.number_visual_observations
         self.use_depth = use_depth
+        self.save_activations = save_activations
         if save_activations:
-            self.save_activations = save_activations
             self.encoding = []
         tf.Variable(int(brain.vector_action_space_type == 'continuous'),
                     name='is_continuous_control', trainable=False, dtype=tf.int32)

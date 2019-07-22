@@ -338,7 +338,7 @@ class PPOTrainer(Trainer):
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 2 and self.keys_collected[int(str(agent_id).split("-")[0])]>2):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 0 and self.keys_collected[int(str(agent_id).split("-")[0])]>0):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
