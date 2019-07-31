@@ -269,7 +269,10 @@ class PPOTrainer(Trainer):
                     self.training_buffer[agent_id]['value_estimates'].append(value[idx][0])
                     if agent_id not in self.cumulative_rewards:
                         self.cumulative_rewards[agent_id] = 0
-                    self.cumulative_rewards[agent_id] += next_info.rewards[next_idx]
+                    if self.no_external_rewards:
+                        self.cumulative_rewards[agent_id] += 0
+                    else:
+                        self.cumulative_rewards[agent_id] += next_info.rewards[next_idx]
                     if self.use_curiosity:
                         if agent_id not in self.intrinsic_rewards:
                             self.intrinsic_rewards[agent_id] = 0
