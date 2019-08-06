@@ -68,6 +68,11 @@ class PPOPolicy(Policy):
             self.encodings = []
             self.values = []
             self.actions = []
+            if self.use_curiosity:
+                self.enc_cur_state = []
+                self.enc_next_state = []
+                self.pred_state = []
+                self.pred_act = []
 
         self.update_dict = {'value_loss': self.model.value_loss,
                             'policy_loss': self.model.policy_loss,
@@ -75,6 +80,13 @@ class PPOPolicy(Policy):
         if self.use_curiosity:
             self.update_dict['forward_loss'] = self.model.forward_loss
             self.update_dict['inverse_loss'] = self.model.inverse_loss
+            if self.save_activations:
+                self.inference_dict['enc_cur_state'] = self.model.enc_cur_state
+                self.inference_dict['enc_next_state'] = self.model.encoded_next_state
+                self.inference_dict['pred_state'] = self.model.pred_next_state
+                self.inference_dict['pred_act'] = self.model.pred_action
+                self.inference_dict['forward_loss'] = self.model.forward_loss
+                self.inference_dict['inverse_loss'] = self.model.inverse_loss
 
     def evaluate(self, brain_info):
         """
@@ -84,6 +96,19 @@ class PPOPolicy(Policy):
         """
         feed_dict = {self.model.batch_size: len(brain_info.vector_observations),
                      self.model.sequence_length: 1}
+        if self.save_activations:
+                feed_dict = {self.model.batch_size: len(brain_info.vector_observations),
+                             self.model.sequence_length: 1,
+                             self.model.mask_input:[0],
+                             self.model.returns_holder: [0],
+                             self.model.old_value: [0],
+                             self.model.advantage: [[0]],
+                             self.model.all_old_log_probs: [[0,0,0,0,0,0,0,0,0,0,0]],
+                             self.model.action_holder: [[0,0,0,0]],
+                             self.model.visual_in[0]: [np.zeros((168,168,3))],
+                             self.model.next_visual_in[0]: [np.zeros((168,168,3))],
+                             self.model.vector_in: [[0,0,0,0,0,0,0,0]],
+                             self.model.next_vector_in: [[0,0,0,0,0,0,0,0]]}
         epsilon = None
         if self.use_recurrent:
             if not self.use_continuous_act:
@@ -102,6 +127,11 @@ class PPOPolicy(Policy):
             self.encodings.append(run_out['encoded_state'])
             self.values.append(run_out['value'])
             self.actions.append(run_out['action'])
+            if self.use_curiosity:
+                self.enc_cur_state.append(run_out['enc_cur_state'])
+                self.enc_next_state.append(run_out['enc_next_state'])
+                self.pred_state.append(run_out['pred_state'])
+                self.pred_act.append(run_out['pred_act'])
         if self.use_continuous_act:
             run_out['random_normal_epsilon'] = epsilon
         return run_out

@@ -46,6 +46,7 @@ class PPOModel(LearningModel):
             self.curiosity_strength = curiosity_strength
             self.forward_model_weight = forward_model_weight
             encoded_state, encoded_next_state = self.create_curiosity_encoders()
+            self.enc_cur_state = encoded_state
             self.create_inverse_model(encoded_state, encoded_next_state)
             self.create_forward_model(encoded_state, encoded_next_state)
         self.create_ppo_optimizer(self.log_probs, self.old_log_probs, self.value,
@@ -129,14 +130,14 @@ class PPOModel(LearningModel):
         combined_input = tf.concat([encoded_state, encoded_next_state], axis=1)
         hidden = tf.layers.dense(combined_input, 256, activation=self.swish)
         if self.brain.vector_action_space_type == "continuous":
-            pred_action = tf.layers.dense(hidden, self.act_size[0], activation=None)
-            squared_difference = tf.reduce_sum(tf.squared_difference(pred_action, self.selected_actions), axis=1)
+            self.pred_action = tf.layers.dense(hidden, self.act_size[0], activation=None)
+            squared_difference = tf.reduce_sum(tf.squared_difference(self.pred_action, self.selected_actions), axis=1)
             self.inverse_loss = tf.reduce_mean(tf.dynamic_partition(squared_difference, self.mask, 2)[1])
         else:
-            pred_action = tf.concat(
+            self.pred_action = tf.concat(
                 [tf.layers.dense(hidden, self.act_size[i], activation=tf.nn.softmax)
                  for i in range(len(self.act_size))], axis=1)
-            cross_entropy = tf.reduce_sum(-tf.log(pred_action + 1e-10) * self.selected_actions, axis=1)
+            cross_entropy = tf.reduce_sum(-tf.log(self.pred_action + 1e-10) * self.selected_actions, axis=1)
             self.inverse_loss = tf.reduce_mean(tf.dynamic_partition(cross_entropy, self.mask, 2)[1])
 
     def create_forward_model(self, encoded_state, encoded_next_state):

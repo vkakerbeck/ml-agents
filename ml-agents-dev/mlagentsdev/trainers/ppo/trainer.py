@@ -347,7 +347,7 @@ class PPOTrainer(Trainer):
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 0 and self.keys_collected[int(str(agent_id).split("-")[0])]>0):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 0 and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
@@ -362,6 +362,14 @@ class PPOTrainer(Trainer):
                                 self.policy.encodings = []
                                 self.policy.values = []
                                 self.policy.actions = []
+                                if self.use_curiosity:
+                                    np.save(folder_name+"/enc_cur_state.npy",self.policy.enc_cur_state)
+                                    np.save(folder_name+"/enc_next_state.npy",self.policy.enc_next_state)
+                                    np.save(folder_name+"/pred_state.npy",self.policy.pred_state)
+                                    np.save(folder_name+"/pred_act.npy",self.policy.pred_act)
+                                    self.policy.enc_next_state = []
+                                    self.policy.pred_state = []
+                                    self.policy.pred_act = []
 
                         self.vis_obs_collection = []
                     self.vec_obs_collection[int(str(agent_id).split("-")[0])] = []
