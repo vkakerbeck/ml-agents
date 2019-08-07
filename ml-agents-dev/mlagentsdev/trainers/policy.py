@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 import tensorflow as tf
+import pickle
 
 from mlagentsdev.trainers import ActionInfo, UnityException
 from tensorflow.python.tools import freeze_graph
@@ -79,6 +80,7 @@ class Policy(object):
                             '--run-id'
                             .format(self.model_path))
             self.saver.restore(self.sess, ckpt.model_checkpoint_path)
+
 
     def evaluate(self, brain_info: BrainInfo):
         """

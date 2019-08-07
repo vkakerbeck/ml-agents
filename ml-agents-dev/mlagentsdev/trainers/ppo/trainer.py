@@ -364,10 +364,8 @@ class PPOTrainer(Trainer):
                                 self.policy.actions = []
                                 if self.use_curiosity:
                                     np.save(folder_name+"/enc_cur_state.npy",self.policy.enc_cur_state)
-                                    np.save(folder_name+"/enc_next_state.npy",self.policy.enc_next_state)
                                     np.save(folder_name+"/pred_state.npy",self.policy.pred_state)
                                     np.save(folder_name+"/pred_act.npy",self.policy.pred_act)
-                                    self.policy.enc_next_state = []
                                     self.policy.pred_state = []
                                     self.policy.pred_act = []
 

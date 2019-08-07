@@ -46,7 +46,6 @@ class PPOModel(LearningModel):
             self.curiosity_strength = curiosity_strength
             self.forward_model_weight = forward_model_weight
             encoded_state, encoded_next_state = self.create_curiosity_encoders()
-            self.enc_cur_state = encoded_state
             self.create_inverse_model(encoded_state, encoded_next_state)
             self.create_forward_model(encoded_state, encoded_next_state)
         self.create_ppo_optimizer(self.log_probs, self.old_log_probs, self.value,
@@ -116,7 +115,9 @@ class PPOModel(LearningModel):
             encoded_state_list.append(encoded_vector_obs)
             encoded_next_state_list.append(encoded_next_vector_obs)
 
+
         encoded_state = tf.concat(encoded_state_list, axis=1)
+        self.enc_cur_state = tf.identity(encoded_state, name='enc_cur_state')
         encoded_next_state = tf.concat(encoded_next_state_list, axis=1)
         return encoded_state, encoded_next_state
 
