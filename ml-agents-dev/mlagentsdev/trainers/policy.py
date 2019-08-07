@@ -81,6 +81,13 @@ class Policy(object):
                             .format(self.model_path))
             self.saver.restore(self.sess, ckpt.model_checkpoint_path)
 
+            #Comment in to save weights XX make this a parameter
+            '''vars = tf.trainable_variables()
+            vars_vals = self.sess.run(vars)
+            with open("model_weights.txt", "wb") as fp:
+                for var, val in zip(vars, vars_vals):
+                    pickle.dump(var.name, fp)'''
+
 
     def evaluate(self, brain_info: BrainInfo):
         """
