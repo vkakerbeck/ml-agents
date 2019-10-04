@@ -5,6 +5,7 @@
 import logging
 import os
 from collections import deque
+import scipy.misc
 
 import numpy as np
 import tensorflow as tf
@@ -22,7 +23,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations, no_external_rewards):
+                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations, no_external_rewards, collect_obs):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -73,6 +74,9 @@ class PPOTrainer(Trainer):
         self.Pstats = []
         self.save_activations = save_activations
         self.no_external_rewards = no_external_rewards
+        self.collect_obs = collect_obs
+
+        self.n_step = 0
 
 
     def __str__(self):
@@ -213,6 +217,9 @@ class PPOTrainer(Trainer):
                             stored_info.visual_observations[i][idx])
                         if (self.save_obs):
                             self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
+                        if(self.collect_obs):
+                            scipy.misc.imsave(str('C:/Users/vkakerbeck/Dropbox/PhD/Data/ObstacleTower/train/obs_'+str(self.n_step)+'.png'), stored_info.visual_observations[i][idx])#XX make path universal
+                            self.n_step = self.n_step + 1
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
                     if self.policy.use_vec_obs:

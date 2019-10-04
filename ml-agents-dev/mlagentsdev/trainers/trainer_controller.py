@@ -44,7 +44,8 @@ class TrainerController(object):
                  seed_curriculum: int,
                  use_depth: bool,
                  save_activations: bool,
-                 no_external_rewards: bool):
+                 no_external_rewards: bool,
+                 collect_obs:bool):
         """
         :param model_path: Path to save the model.
         :param summaries_dir: Folder to save training summaries.
@@ -63,6 +64,7 @@ class TrainerController(object):
         :param use_depth: Augment visual information with depth information.
         :param save_activations: Save network activations.
         :param no_external_rewards: If external rewards from the environment are used for training.
+        :param collect_obs: Whether to save all observations as png (collected for auto encoder training).
         """
 
         self.model_path = model_path
@@ -84,6 +86,7 @@ class TrainerController(object):
         self.training_start_time = time()
         self.fast_simulation = fast_simulation
         self.save_obs = save_obs
+        self.collect_obs = collect_obs
         self.num_envs = num_envs
         self.seed_logger = logging.getLogger('seed_logger')
         self.seed_curriculum = seed_curriculum
@@ -186,7 +189,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations, self.no_external_rewards)
+                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations, self.no_external_rewards,self.collect_obs)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '

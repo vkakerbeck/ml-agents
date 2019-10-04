@@ -49,6 +49,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     fast_simulation = not bool(run_options['--slow'])
     no_graphics = run_options['--no-graphics']
     save_obs = run_options['--save-obs']
+    collect_obs = run_options['--collect-obs']
     seed_curriculum = run_options['--seed-curriculum']
     use_depth = run_options['--use-depth']
     save_activations = run_options['--save-activations']
@@ -110,7 +111,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
                            run_seed, fast_simulation,save_obs,num_envs,seed_curriculum,
-                           use_depth, save_activations, no_external_rewards)
+                           use_depth, save_activations, no_external_rewards,collect_obs)
 
     # Signal that environment has been launched.
     process_queue.put(True)
@@ -269,6 +270,7 @@ def main():
       --use-depth                Augment visual input with depth information [default: False].
       --save-activations         Save network activations [default: False].
       --no-external-rewards      If external rewards from the environment are used for training [default: False].
+      --collect-obs              Whether to save all observations as png (collected for auto encoder training) [default: False].
     '''
 
     options = docopt(_USAGE)
