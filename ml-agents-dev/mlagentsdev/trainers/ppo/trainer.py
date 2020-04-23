@@ -347,14 +347,14 @@ class PPOTrainer(Trainer):
                         print("Agent "+str(agent_id).split("-")[0]+": Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]))+" Keys collected: "+str(self.keys_collected))#str(np.sum(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2],axis=0))))
                     except:
-                        pass
+                        print('TODO: edit this error message.')
                         #print(np.array(self.vec_obs_collection))
                     #Stats = [agent, keys collected, floor reached, episode length, reward]
                     self.Pstats = [str(agent_id).split("-")[0], self.keys_collected[int(str(agent_id).split("-")[0])],
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 0 and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
@@ -366,17 +366,19 @@ class PPOTrainer(Trainer):
                                 np.save(folder_name+"/values.npy",self.policy.values)
                                 np.save(folder_name+"/actions.npy",self.policy.actions)
                                 np.save(folder_name+"/rewards.npy",self.overall_reward)
-                                self.policy.encodings = []
-                                self.policy.values = []
-                                self.policy.actions = []
                                 if self.use_curiosity:
                                     np.save(folder_name+"/enc_cur_state.npy",self.policy.enc_cur_state)
                                     np.save(folder_name+"/pred_state.npy",self.policy.pred_state)
                                     np.save(folder_name+"/pred_act.npy",self.policy.pred_act)
-                                    self.policy.pred_state = []
-                                    self.policy.pred_act = []
 
                         self.vis_obs_collection = []
+                    if self.save_activations:
+                        self.policy.encodings = []
+                        self.policy.values = []
+                        self.policy.actions = []
+                        if self.use_curiosity:
+                            self.policy.pred_state = []
+                            self.policy.pred_act = []
                     self.vec_obs_collection[int(str(agent_id).split("-")[0])] = []
                     self.keys_collected[int(str(agent_id).split("-")[0])] = 0
                     self.cumulative_rewards[agent_id] = 0
