@@ -394,7 +394,7 @@ class PPOTrainer(Trainer):
                     self.overall_reward = []
                     if self.saved_obs:
                         print("Saved observations. Ending execution.")
-                        sys.close()
+                        sys.exit()
 
         self.trainer_metrics.end_experience_collection_timer()
 
