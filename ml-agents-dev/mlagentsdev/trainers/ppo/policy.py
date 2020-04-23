@@ -97,6 +97,7 @@ class PPOPolicy(Policy):
                      self.model.sequence_length: 1}
         last_val = [0]
         if self.save_activations:
+            if self.use_curiosity:
                 feed_dict = {self.model.batch_size: len(brain_info.vector_observations),
                              self.model.sequence_length: 1,
                              self.model.mask_input:[0],
@@ -105,6 +106,9 @@ class PPOPolicy(Policy):
                              self.model.action_holder: brain_info.previous_vector_actions,
                              self.model.next_visual_in[0]: brain_info.visual_observations[0],
                              self.model.next_vector_in: brain_info.vector_observations}
+            else:
+                feed_dict = {self.model.batch_size: len(brain_info.vector_observations),
+                             self.model.sequence_length: 1}
         epsilon = None
         if self.use_recurrent:
             if not self.use_continuous_act:
