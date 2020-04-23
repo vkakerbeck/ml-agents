@@ -6,6 +6,7 @@ import logging
 import os
 from collections import deque
 import scipy.misc
+import sys
 
 import numpy as np
 import tensorflow as tf
@@ -77,6 +78,7 @@ class PPOTrainer(Trainer):
         self.collect_obs = collect_obs
 
         self.n_step = 0
+        self.saved_obs = False
 
 
     def __str__(self):
@@ -354,12 +356,13 @@ class PPOTrainer(Trainer):
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
                     if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 3 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
                             np.save(folder_name+"/visobs.npy",self.vis_obs_collection)
                             np.save(folder_name+"/vecobs.npy",self.vec_obs_collection)
+                            self.saved_obs = True
                             if self.save_activations:
                                 print("save activations")
                                 np.save(folder_name+"/encodings.npy",self.policy.encodings)
@@ -389,6 +392,9 @@ class PPOTrainer(Trainer):
                         self.intrinsic_rewards[agent_id] = 0
                     self.stats['Policy/Overall Reward'].append(np.sum(self.overall_reward))
                     self.overall_reward = []
+                    if self.saved_obs:
+                        print("Saved observations. Ending execution.")
+                        sys.close()
 
         self.trainer_metrics.end_experience_collection_timer()
 
