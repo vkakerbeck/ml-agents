@@ -95,7 +95,7 @@ namespace mlagentsdev
         [SerializeField]
         public BroadcastHub broadcastHub = new BroadcastHub();
 
-        private const string kApiVersion = "API-8";
+        private const string kApiVersion = "API-6";//XX
 
         /// Temporary storage for global gravity value
         /// Used to restore oringal value when deriving Academy modifies it
