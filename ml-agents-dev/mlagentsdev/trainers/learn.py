@@ -36,6 +36,8 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     # General parameters
     env_path = (run_options['--env']
                 if run_options['--env'] != 'None' else None)
+    override_obs = (run_options['--override-obs']
+                if run_options['--override-obs'] != 'None' else None)
     run_id = run_options['--run-id']
     load_model = run_options['--load']
     train_model = run_options['--train']
@@ -106,7 +108,7 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
     maybe_meta_curriculum = try_create_meta_curriculum(curriculum_folder, env)
 
     # Create controller and begin training.
-    tc = TrainerController(model_path, summaries_dir, run_id + '-' + str(sub_id),
+    tc = TrainerController(model_path, override_obs, summaries_dir, run_id + '-' + str(sub_id),
                            save_freq, maybe_meta_curriculum,
                            load_model, train_model,
                            keep_checkpoints, lesson, env.external_brains,
@@ -249,6 +251,7 @@ def main():
 
     Options:
       --env=<file>               Name of the Unity executable [default: None].
+      --override-obs=<directory> Whether to override the environment observations with provided observations. If yes, provide path [default: None].
       --curriculum=<directory>   Curriculum json directory for environment [default: None].
       --keep-checkpoints=<n>     How many model checkpoints to keep [default: 5].
       --lesson=<n>               Start learning from this lesson [default: 0].

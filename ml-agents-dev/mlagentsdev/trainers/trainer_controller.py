@@ -28,6 +28,7 @@ from mlagentsdev.trainers.meta_curriculum import MetaCurriculum
 class TrainerController(object):
     def __init__(self,
                  model_path: str,
+                 override_obs: str,
                  summaries_dir: str,
                  run_id: str,
                  save_freq: int,
@@ -48,6 +49,7 @@ class TrainerController(object):
                  collect_obs:bool):
         """
         :param model_path: Path to save the model.
+        :param override_obs: Whether to override the environment observations with provided observations + path.
         :param summaries_dir: Folder to save training summaries.
         :param run_id: The sub-directory name for model and summary statistics
         :param save_freq: Frequency at which to save model
@@ -69,6 +71,7 @@ class TrainerController(object):
 
         self.model_path = model_path
         self.summaries_dir = summaries_dir
+        self.override_obs = override_obs
         self.external_brains = external_brains
         self.external_brain_names = external_brains.keys()
         self.logger = logging.getLogger('mlagentsdev.envs')
@@ -99,6 +102,14 @@ class TrainerController(object):
             self.seed_lesson = 1
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
+
+        if self.override_obs != None:
+            print(self.override_obs)
+            self.all_vis_obs = np.load(self.override_obs + 'visobs.npy')
+            self.all_vec_obs = np.load(self.override_obs + 'vecobs.npy')
+            print("observations loaded.")
+            print(self.all_vis_obs.shape)
+            print(self.all_vec_obs.shape)
 
     def _get_measure_vals(self):
         if self.meta_curriculum:
@@ -381,6 +392,21 @@ class TrainerController(object):
             text_action=take_action_text,
             value=take_action_value
         )
+        #print(new_info['LearningBrain'].visual_observations[0][0].shape)
+        if self.override_obs != None:
+            #print("overriding")
+            #print(self.global_step)
+            try:
+                if self.global_step < self.all_vis_obs.shape[0]:
+                    new_info['LearningBrain'].visual_observations[0][0] = self.all_vis_obs[self.global_step]
+                    new_info['LearningBrain'].vector_observations[0] = self.all_vec_obs[0][self.global_step]
+                    print(str(self.global_step) + ':  ' + str(new_info['LearningBrain'].local_done))
+                    new_info['LearningBrain'].local_done[0] = False
+                else:
+                    new_info['LearningBrain'].local_done[0] = True
+                    print('done!')
+            except:
+                print("Error at step " + str(self.global_step))
 
         if self.use_depth:
             for e in range(self.num_envs):

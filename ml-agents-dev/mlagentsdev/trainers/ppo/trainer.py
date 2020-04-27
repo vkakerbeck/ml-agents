@@ -381,6 +381,7 @@ class PPOTrainer(Trainer):
                         self.policy.values = []
                         self.policy.actions = []
                         if self.use_curiosity:
+                            self.policy.enc_cur_state = []
                             self.policy.pred_state = []
                             self.policy.pred_act = []
                     self.vec_obs_collection[int(str(agent_id).split("-")[0])] = []
