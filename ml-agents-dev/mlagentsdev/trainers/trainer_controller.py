@@ -310,9 +310,9 @@ class TrainerController(object):
                         str(env.reset_parameters['tower-seed']))
                     print(info_str)"""
                     if self.train_model:
-                        info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
-                        ',' + str(stats[2]) + ',' + str(stats[3]) + ',' + str(stats[1]))
-                        self.seed_logger.info(info_log)
+                        #info_log = (str(stats[0]) + ',' + str(env.reset_parameters['tower-seed']) + ',' + str(stats[4]) +
+                        #',' + str(stats[2]) + ',' + str(stats[3]) + ',' + str(stats[1]))
+                        #self.seed_logger.info(info_log)
                         if self.seed_curriculum and (t.get_step - startS > 5000000):#XX add incrementation dependent on average reward
                             self.seed_lesson = self.seed_lesson + 1#XX tensorflow summaries - add seed lesson
                             startS = t.get_step
@@ -328,6 +328,7 @@ class TrainerController(object):
                         and self.train_model:
                     # Save Tensorflow model
                     self._save_model(steps=self.global_step)
+                    #print('saved model - step '+str(self.global_step))
                 curr_info = new_info
             # Final save Tensorflow model
             if self.global_step != 0 and self.train_model:
@@ -386,7 +387,13 @@ class TrainerController(object):
             take_action_outputs[brain_name] = action_info.outputs
         time_start_step = time()
 
+        #randAct = np.array([[np.random.randint(0,3,1)[0],np.random.randint(0,3,1)[0],np.random.randint(0,2,1)[0],
+        #np.random.randint(0,3,1)[0]]])
+        #randActDict = {'LearningBrain': randAct}
+        #take_action_outputs['LearningBrain']['action'] = randAct
+
         new_info = env.step(
+            #vector_action=randActDict,
             vector_action=take_action_vector,
             memory=take_action_memories,
             text_action=take_action_text,
