@@ -71,6 +71,17 @@ def run_training(sub_id: int, run_seed: int, run_options, process_queue):
                     'allowed-floors': 2.0,
                     'total-floors': 20.0,
                     'default-theme': 0.0}
+        '''reset_conf = {'tower-seed': -1.0,
+                    'starting-floor': 0.0,
+                    'dense-reward': 1.0,
+                    'lighting-type': 0.0,
+                    'visual-theme': 0.0,
+                    'agent-perspective': 1.0,
+                    'allowed-rooms': 0.0,
+                    'allowed-modules': 0.0,
+                    'allowed-floors': 0.0,
+                    'total-floors': 20.0,
+                    'default-theme': 0.0}'''
     else:
         reset_conf = load_config(reset_config_path)
     # Recognize and use docker volume if one is passed as an argument
