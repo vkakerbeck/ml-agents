@@ -45,7 +45,7 @@ class Policy(object):
         self.use_recurrent = trainer_parameters["use_recurrent"]
         self.use_continuous_act = (brain.vector_action_space_type == "continuous")
         self.model_path = trainer_parameters["model_path"]
-        self.keep_checkpoints = trainer_parameters.get("keep_checkpoints", 5)
+        self.keep_checkpoints = trainer_parameters.get("keep_checkpoints", 50)
         self.graph = tf.Graph()
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
@@ -65,12 +65,14 @@ class Policy(object):
 
     def _initialize_graph(self):
         with self.graph.as_default():
-            self.saver = tf.train.Saver(max_to_keep=self.keep_checkpoints)
+            self.saver = tf.train.Saver(max_to_keep=12)#XXself.keep_checkpoints)
             init = tf.global_variables_initializer()
             self.sess.run(init)
+            self.save_model(0)
 
     def _load_graph(self):
         with self.graph.as_default():
+            print("keep: " + str(self.keep_checkpoints))
             self.saver = tf.train.Saver(max_to_keep=self.keep_checkpoints)
             logger.info('Loading Model for brain {}'.format(self.brain.brain_name))
             ckpt = tf.train.get_checkpoint_state(self.model_path)

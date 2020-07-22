@@ -356,20 +356,23 @@ class PPOTrainer(Trainer):
                     self.Pstats = [str(agent_id).split("-")[0], self.keys_collected[int(str(agent_id).split("-")[0])],
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1])),
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
-                    if (self.save_obs):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) > 4 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+
+                    if (self.save_obs or self.save_activations):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) >=0 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
-                            np.save(folder_name+"/visobs.npy",self.vis_obs_collection)
-                            np.save(folder_name+"/vecobs.npy",self.vec_obs_collection)
-                            self.saved_obs = True
+                            if self.save_obs:
+                                np.save(folder_name+"/visobs.npy",self.vis_obs_collection)
+                                np.save(folder_name+"/vecobs.npy",self.vec_obs_collection)
+                                self.saved_obs = True
                             if self.save_activations:
                                 print("save activations")
                                 np.save(folder_name+"/encodings.npy",self.policy.encodings)
                                 np.save(folder_name+"/values.npy",self.policy.values)
                                 np.save(folder_name+"/actions.npy",self.policy.actions)
                                 np.save(folder_name+"/rewards.npy",self.overall_reward)
+                                np.save(folder_name+"/gradients.npy",self.policy.gradients)
                                 if self.use_curiosity:
                                     np.save(folder_name+"/enc_cur_state.npy",self.policy.enc_cur_state)
                                     np.save(folder_name+"/pred_state.npy",self.policy.pred_state)
@@ -380,6 +383,7 @@ class PPOTrainer(Trainer):
                         self.policy.encodings = []
                         self.policy.values = []
                         self.policy.actions = []
+                        self.policy.gradients = []
                         if self.use_curiosity:
                             self.policy.enc_cur_state = []
                             self.policy.pred_state = []

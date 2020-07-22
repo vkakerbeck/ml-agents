@@ -205,13 +205,13 @@ class LearningModel(object):
             hidden_state, hidden_visual = None, None
             if self.vis_obs_size > 0:
                 for j in range(brain.number_visual_observations):
-                    encoded_visual = self.create_visual_observation_encoder(self.visual_in[j],
+                    self.encoded_visual = self.create_visual_observation_encoder(self.visual_in[j],
                                                                             h_size,
                                                                             activation_fn,
                                                                             num_layers,
                                                                             "main_graph_{}_encoder{}"
                                                                             .format(i, j), False)
-                    visual_encoders.append(encoded_visual)
+                    visual_encoders.append(self.encoded_visual)
                 hidden_visual = tf.concat(visual_encoders, axis=1)
             if brain.vector_observation_space_size > 0:
                 hidden_state = self.create_vector_observation_encoder(vector_observation_input,
@@ -324,6 +324,7 @@ class LearningModel(object):
         """
         hidden_streams = self.create_observation_streams(1, h_size, h_size_vec, num_layers)
         hidden = hidden_streams[0]
+
         if self.save_activations:
             self.encoding = tf.identity(hidden)
 

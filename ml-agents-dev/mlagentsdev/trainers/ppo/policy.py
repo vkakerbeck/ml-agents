@@ -63,20 +63,23 @@ class PPOPolicy(Policy):
         #if self.use_curiosity:
         #    self.inference_dict['pred_next_state'] = self.model.pred_next_state
 
+        self.update_dict = {'value_loss': self.model.value_loss,
+                    'policy_loss': self.model.policy_loss,
+                    'update_batch': self.model.update_batch}
         if self.save_activations:
             self.inference_dict['encoded_state'] = self.model.encoding
+            self.update_dict['gradients'] = self.model.hidden_grad
             self.encodings = []
+            self.gradients = []
             self.values = []
             self.actions = []
+            print(self.update_dict)
             if self.use_curiosity:
                 self.enc_cur_state = []
                 self.enc_next_state = []
                 self.pred_state = []
                 self.pred_act = []
 
-        self.update_dict = {'value_loss': self.model.value_loss,
-                            'policy_loss': self.model.policy_loss,
-                            'update_batch': self.model.update_batch}
         if self.use_curiosity:
             self.update_dict['forward_loss'] = self.model.forward_loss
             self.update_dict['inverse_loss'] = self.model.inverse_loss
@@ -123,6 +126,7 @@ class PPOPolicy(Policy):
             feed_dict[self.model.epsilon] = epsilon
         feed_dict = self._fill_eval_dict(feed_dict, brain_info)
         run_out = self._execute_model(feed_dict, self.inference_dict)
+
         if self.save_activations:
             self.encodings.append(run_out['encoded_state'])
             self.values.append(run_out['value'])
@@ -192,6 +196,16 @@ class PPOPolicy(Policy):
             feed_dict[self.model.memory_in] = mem_in
         self.has_updated = True
         run_out = self._execute_model(feed_dict, self.update_dict)
+        #print('updated')
+        #print('value loss:')
+        #print(run_out['value_loss'])
+        #print('policy loss:')
+        #print(run_out['policy_loss'])
+        #print('advantages:')
+        #print(np.mean(mini_batch['advantages']))
+        if self.save_activations:
+            self.gradients.append(run_out['gradients'])
+            print('appended gradients')
         return run_out
 
     def get_intrinsic_rewards(self, curr_info, next_info):

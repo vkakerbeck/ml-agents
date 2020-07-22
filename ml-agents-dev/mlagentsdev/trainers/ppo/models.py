@@ -151,7 +151,7 @@ class PPOModel(LearningModel):
         combined_input = tf.concat([encoded_state, self.selected_actions], axis=1)
         hidden = tf.layers.dense(combined_input, 256, activation=self.swish)
         # We compare against the concatenation of all observation streams, hence `self.vis_obs_size + int(self.vec_obs_size > 0)`.
-        pred_next_state = tf.layers.dense(hidden, self.curiosity_enc_size * (self.vis_obs_size + int(self.vec_obs_size > 0)),
+        pred_next_state = tf.layers.dense(self.hidden, self.curiosity_enc_size * (self.vis_obs_size + int(self.vec_obs_size > 0)),
                                           activation=None)
 
         self.pred_next_state = pred_next_state
@@ -200,6 +200,8 @@ class PPOModel(LearningModel):
 
         self.loss = self.policy_loss + 0.5 * self.value_loss - decay_beta * tf.reduce_mean(
             tf.dynamic_partition(entropy, self.mask, 2)[1])
+
+        self.hidden_grad = tf.gradients(self.loss,self.encoded_visual)
 
         if self.use_curiosity:
             self.loss += 10 * (self.forward_model_weight * self.forward_loss + (1 - self.forward_model_weight) * self.inverse_loss)
