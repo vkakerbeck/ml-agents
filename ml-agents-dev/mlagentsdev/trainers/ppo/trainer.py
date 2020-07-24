@@ -15,6 +15,7 @@ from mlagentsdev.envs import AllBrainInfo, BrainInfo
 from mlagentsdev.trainers.buffer import Buffer
 from mlagentsdev.trainers.ppo.policy import PPOPolicy
 from mlagentsdev.trainers.trainer import Trainer
+from mlagentsdev.trainers.teacher import Teacher
 
 
 logger = logging.getLogger("mlagentsdev.trainers")
@@ -24,7 +25,7 @@ class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorithm."""
 
     def __init__(self, brain, reward_buff_cap, trainer_parameters, training,
-                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations, no_external_rewards, collect_obs):
+                 load, seed, run_id, save_obs, num_envs, use_depth, save_activations, no_external_rewards, collect_obs, supervisor_dir):
         """
         Responsible for collecting experiences and training PPO model.
         :param trainer_parameters: The parameters for the trainer (dictionary).
@@ -37,6 +38,7 @@ class PPOTrainer(Trainer):
         :param use_depth: Augment visual input with depth information.
         :param save_activations: Save network activations.
         :param no_external_rewards: If external rewards from the environment are used for training
+        :param supervisor_dir: directory to frozen graph of teacher agent.
         """
         super(PPOTrainer, self).__init__(brain, trainer_parameters,
                                          training, run_id)
@@ -76,6 +78,10 @@ class PPOTrainer(Trainer):
         self.save_activations = save_activations
         self.no_external_rewards = no_external_rewards
         self.collect_obs = collect_obs
+        self.supervisor_dir = supervisor_dir
+
+        if self.supervisor_dir != None:
+            self.teacher = Teacher(self.supervisor_dir)
 
         self.n_step = 0
         self.saved_obs = False
@@ -257,7 +263,23 @@ class PPOTrainer(Trainer):
                             reward = reward + next_info.rewards[next_idx] + intrinsic_rewards[next_idx]
 
                     else:
-                        reward = reward +next_info.rewards[next_idx]
+                        if self.supervisor_dir != None:
+                            a = self.teacher.get_teacher_action([stored_info.visual_observations[0][idx]],[stored_info.vector_observations[idx]],[stored_info.action_masks[idx]])
+                            teacher_reward = 0
+                            if np.argmax(a[0,:3]) == actions[idx][0]:
+                                teacher_reward += 0.25
+                            if np.argmax(a[0,3:6]) == actions[idx][1]:
+                                teacher_reward += 0.25
+                            if np.argmax(a[0,6:8]) == actions[idx][2]:
+                                teacher_reward += 0.25
+                            if np.argmax(a[0,8:]) == actions[idx][3]:
+                                teacher_reward += 0.25
+                            #print(teacher_reward)
+                            reward = reward + teacher_reward * 0.001
+                            #reward = reward + next_info.rewards[next_idx] + teacher_reward * 0.0001
+                        else:
+                            reward = reward +next_info.rewards[next_idx]
+
 
                     if (len(np.array(self.vec_obs_collection)[int(str(agent_id).split("-")[0])])>1):
                         if (np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-1,1:-2])>0 and np.sum(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[-2,1:-2])==0):
@@ -397,6 +419,7 @@ class PPOTrainer(Trainer):
                             self.intrinsic_rewards.get(agent_id, 0))
                         self.intrinsic_rewards[agent_id] = 0
                     self.stats['Policy/Overall Reward'].append(np.sum(self.overall_reward))
+                    print(np.sum(self.overall_reward))
                     self.overall_reward = []
                     if self.saved_obs:
                         print("Saved observations. Ending execution.")
@@ -489,4 +512,5 @@ def get_gae(rewards, value_estimates, value_next=0.0, gamma=0.99, lambd=0.95):
     value_estimates = np.asarray(value_estimates.tolist() + [value_next])
     delta_t = rewards + gamma * value_estimates[1:] - value_estimates[:-1]
     advantage = discount_rewards(r=delta_t, gamma=gamma * lambd)
+    print(advantage)
     return advantage

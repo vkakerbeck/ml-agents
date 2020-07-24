@@ -46,7 +46,8 @@ class TrainerController(object):
                  use_depth: bool,
                  save_activations: bool,
                  no_external_rewards: bool,
-                 collect_obs:bool):
+                 collect_obs:bool,
+                 supervisor_dir: str):
         """
         :param model_path: Path to save the model.
         :param override_obs: Whether to override the environment observations with provided observations + path.
@@ -67,6 +68,7 @@ class TrainerController(object):
         :param save_activations: Save network activations.
         :param no_external_rewards: If external rewards from the environment are used for training.
         :param collect_obs: Whether to save all observations as png (collected for auto encoder training).
+        :param supervisor_dir: directory to frozen graph of teacher agent.
         """
 
         self.model_path = model_path
@@ -97,6 +99,7 @@ class TrainerController(object):
         self.save_activations = save_activations
         self.depth_extractor = []
         self.no_external_rewards = no_external_rewards
+        self.supervisor_dir = supervisor_dir
         if self.seed_curriculum:
             self.seed_difficulties = []
             self.seed_lesson = 1
@@ -200,7 +203,7 @@ class TrainerController(object):
                         .min_lesson_length if self.meta_curriculum else 0,
                     trainer_parameters_dict[brain_name],
                     self.train_model, self.load_model, self.seed,
-                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations, self.no_external_rewards,self.collect_obs)
+                    self.run_id,self.save_obs,self.num_envs, self.use_depth, self.save_activations, self.no_external_rewards,self.collect_obs,self.supervisor_dir)
                 self.trainer_metrics[brain_name] = self.trainers[brain_name].trainer_metrics
             else:
                 raise UnityEnvironmentException('The trainer config contains '
