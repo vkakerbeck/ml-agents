@@ -324,6 +324,9 @@ class LearningModel(object):
         """
         hidden_streams = self.create_observation_streams(1, h_size, h_size_vec, num_layers)
         hidden = hidden_streams[0]
+        # Comment in to use two separate representations for policy and value estimte.
+        # Change self.create_observation_streams(1,...) to self.create_observation_streams(2,...)
+        #hiddenV = hidden_streams[1]
 
         if self.save_activations:
             self.encoding = tf.identity(hidden)
