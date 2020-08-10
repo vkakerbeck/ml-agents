@@ -65,7 +65,7 @@ class Policy(object):
 
     def _initialize_graph(self):
         with self.graph.as_default():
-            self.saver = tf.train.Saver(max_to_keep=12)#XXself.keep_checkpoints)
+            self.saver = tf.train.Saver(max_to_keep=self.keep_checkpoints)
             init = tf.global_variables_initializer()
             self.sess.run(init)
             self.save_model(0)
