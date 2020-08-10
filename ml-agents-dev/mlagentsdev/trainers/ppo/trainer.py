@@ -75,6 +75,8 @@ class PPOTrainer(Trainer):
         self.keys_collected = np.zeros((num_envs))
         self.overall_reward = []
         self.Pstats = []
+        self.floorStats = []
+        self.rewardStats = []
         self.save_activations = save_activations
         self.no_external_rewards = no_external_rewards
         self.collect_obs = collect_obs
@@ -226,7 +228,7 @@ class PPOTrainer(Trainer):
                         if (self.save_obs):
                             self.vis_obs_collection.append(stored_info.visual_observations[i][idx])
                         if(self.collect_obs):
-                            scipy.misc.imsave(str('C:/Users/vkakerbeck/Dropbox/PhD/Data/ObstacleTower/train/obs_'+str(self.n_step)+'.png'), stored_info.visual_observations[i][idx])#XX make path universal
+                            scipy.misc.imsave(str('D:/Users/Viviane/Dropbox/PhD/Code/Results/TowerTraining/generalization/obs_'+str(self.n_step)+'.png'), stored_info.visual_observations[i][idx])#XX make path universal
                             self.n_step = self.n_step + 1
                         self.training_buffer[agent_id]['next_visual_obs%d' % i].append(
                             next_info.visual_observations[i][next_idx])
@@ -275,8 +277,8 @@ class PPOTrainer(Trainer):
                             if np.argmax(a[0,8:]) == actions[idx][3]:
                                 teacher_reward += 0.25
                             #print(teacher_reward)
-                            reward = reward + teacher_reward * 0.001
-                            #reward = reward + next_info.rewards[next_idx] + teacher_reward * 0.0001
+                            #reward = reward + teacher_reward * 0.001
+                            reward = reward + next_info.rewards[next_idx] + teacher_reward * 0.001
                         else:
                             reward = reward +next_info.rewards[next_idx]
 
@@ -371,6 +373,15 @@ class PPOTrainer(Trainer):
                         self.stats['Environment/Floor'].append(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]))
                         print("Agent "+str(agent_id).split("-")[0]+": Episode length: "+str(self.episode_steps.get(agent_id, 0))+" Floor reached: "+
                         str(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]))+" Keys collected: "+str(self.keys_collected))#str(np.sum(np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2],axis=0))))
+                        '''self.floorStats.append(np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]))
+                        self.rewardStats.append(self.cumulative_rewards.get(agent_id, 0))
+                        print(self.cumulative_rewards.get(agent_id, 0))
+                        print(len(self.floorStats))
+                        if len(self.floorStats)>=10:
+                            print('saving')
+                            np.save('./floorStats_rand.npy',self.floorStats)
+                            np.save('./rewardStats_rand.npy',self.rewardStats)
+                            sys.exit()'''
                     except:
                         print('TODO: edit this error message.')
                         #print(np.array(self.vec_obs_collection))
@@ -380,7 +391,7 @@ class PPOTrainer(Trainer):
                         str(self.episode_steps.get(agent_id, 0)),self.cumulative_rewards.get(agent_id, 0)]
 
                     if (self.save_obs or self.save_activations):
-                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) >=0 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
+                        if (np.max(np.array(self.vec_obs_collection[int(str(agent_id).split("-")[0])])[:,-1]) >=6 ):#and self.keys_collected[int(str(agent_id).split("-")[0])]>3):#np.max(np.array(self.vec_obs_collection[int(str(agent_id)[0])])[:,1:-2])>0):
                             folder_name = str("./observations/"+str(self.episode_steps.get(agent_id, 0))+"_"+str(self.cumulative_rewards.get(agent_id, 0))[:6])
                             print("saving observations in "+folder_name)
                             os.mkdir(folder_name)
@@ -512,5 +523,5 @@ def get_gae(rewards, value_estimates, value_next=0.0, gamma=0.99, lambd=0.95):
     value_estimates = np.asarray(value_estimates.tolist() + [value_next])
     delta_t = rewards + gamma * value_estimates[1:] - value_estimates[:-1]
     advantage = discount_rewards(r=delta_t, gamma=gamma * lambd)
-    print(advantage)
+    #print(advantage)
     return advantage
