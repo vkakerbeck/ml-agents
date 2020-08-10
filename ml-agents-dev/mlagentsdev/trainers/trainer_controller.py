@@ -390,8 +390,9 @@ class TrainerController(object):
             take_action_outputs[brain_name] = action_info.outputs
         time_start_step = time()
 
-        #randAct = np.array([[np.random.randint(0,3,1)[0],np.random.randint(0,3,1)[0],np.random.randint(0,2,1)[0],
-        #np.random.randint(0,3,1)[0]]])
+        # Comment in to use a random policy for collecting observations.
+        # This overrides the action selected by the policy. Also uncomment the line in env.step(...)
+        #randAct = np.array([[np.random.randint(0,3,1)[0],np.random.randint(0,3,1)[0],np.random.randint(0,2,1)[0],np.random.randint(0,3,1)[0]]])
         #randActDict = {'LearningBrain': randAct}
         #take_action_outputs['LearningBrain']['action'] = randAct
 
