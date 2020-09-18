@@ -23,6 +23,8 @@ class PPOPolicy(Policy):
         self.has_updated = False
         self.use_curiosity = bool(trainer_params['use_curiosity'])
         self.save_activations = save_activations
+        self.allGinis = []
+        self.VisGinis = []
 
         with self.graph.as_default():
             self.model = PPOModel(brain,
@@ -66,8 +68,10 @@ class PPOPolicy(Policy):
         self.update_dict = {'value_loss': self.model.value_loss,
                     'policy_loss': self.model.policy_loss,
                     'update_batch': self.model.update_batch}
+
+        self.inference_dict['encoded_state'] = self.model.encoding
+
         if self.save_activations:
-            self.inference_dict['encoded_state'] = self.model.encoding
             self.update_dict['gradients'] = self.model.hidden_grad
             self.encodings = []
             self.gradients = []
@@ -89,6 +93,14 @@ class PPOPolicy(Policy):
                 self.inference_dict['pred_act'] = self.model.pred_action
                 self.inference_dict['forward_loss'] = self.model.forward_loss
                 self.inference_dict['inverse_loss'] = self.model.inverse_loss
+
+    def get_gini_index(self,activations):
+        activations = activations.flatten() #all values are treated equally, arrays must be 1d
+        activations += 0.0000001 #values cannot be 0
+        activations = np.sort(activations) #values must be sorted
+        index = np.arange(1,activations.shape[0]+1) #index per array element
+        n = activations.shape[0]#number of array elements
+        return ((np.sum((2 * index - n  - 1) * activations)) / (n * np.sum(activations))) #Gini coefficient
 
     def evaluate(self, brain_info):
         """
@@ -126,6 +138,9 @@ class PPOPolicy(Policy):
             feed_dict[self.model.epsilon] = epsilon
         feed_dict = self._fill_eval_dict(feed_dict, brain_info)
         run_out = self._execute_model(feed_dict, self.inference_dict)
+
+        self.allGinis.append(self.get_gini_index(np.abs(run_out['encoded_state'])))
+        self.VisGinis.append(self.get_gini_index(np.abs(run_out['encoded_state'][0,:256])))
 
         if self.save_activations:
             self.encodings.append(run_out['encoded_state'])

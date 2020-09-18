@@ -191,6 +191,7 @@ class LearningModel(object):
         :return: List of encoded streams.
         """
         brain = self.brain
+        brain.vector_observation_space_size = 0
         activation_fn = self.swish
 
         self.visual_in = []
@@ -328,8 +329,8 @@ class LearningModel(object):
         # Change self.create_observation_streams(1,...) to self.create_observation_streams(2,...)
         #hiddenV = hidden_streams[1]
 
-        if self.save_activations:
-            self.encoding = tf.identity(hidden)
+        #if self.save_activations:
+        self.encoding = tf.identity(hidden)
 
         if self.use_recurrent:
             self.prev_action = tf.placeholder(shape=[None, len(self.act_size)], dtype=tf.int32,

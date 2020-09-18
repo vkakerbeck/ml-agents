@@ -56,7 +56,7 @@ class PPOTrainer(Trainer):
 
         stats = {'Environment/Cumulative Reward': [], 'Environment/Episode Length': [],'Environment/Keys':[],'Environment/Floor':[],
                  'Policy/Value Estimate': [], 'Policy/Entropy': [], 'Losses/Value Loss': [],
-                 'Losses/Policy Loss': [], 'Policy/Learning Rate': [], 'Policy/Overall Reward': []}
+                 'Losses/Policy Loss': [], 'Policy/Learning Rate': [], 'Policy/Overall Reward': [], 'Policy/Gini Index': [], 'Policy/Visual Gini Index': []}
         if self.use_curiosity:
             stats['Losses/Forward Loss'] = []
             stats['Losses/Inverse Loss'] = []
@@ -465,6 +465,12 @@ class PPOTrainer(Trainer):
         """
         Uses demonstration_buffer to update the policy.
         """
+        self.stats['Policy/Gini Index'].append(np.mean(self.policy.allGinis))
+        self.stats['Policy/Visual Gini Index'].append(np.mean(self.policy.VisGinis))
+        print('Avg Gini Index: ' + str(np.round(np.mean(self.policy.allGinis),3)) + ' Visual: ' + str(np.round(np.mean(self.policy.VisGinis),3)))
+        self.policy.allGinis = []
+        self.policy.VisGinis = []
+
         self.trainer_metrics.start_policy_update_timer(
             number_experiences=len(self.training_buffer.update_buffer['actions']),
             mean_return=float(np.mean(self.cumulative_returns_since_policy_update)))
